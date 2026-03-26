@@ -1,5 +1,6 @@
 package com.sofka.optimizador_envios_backend.config;
 
+import com.sofka.optimizador_envios_backend.application.port.output.ProveedorClient;
 import com.sofka.optimizador_envios_backend.domain.service.EstrategiaFactory;
 import com.sofka.optimizador_envios_backend.domain.service.MotorRecomendacionService;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.external.DhlClientMock;
@@ -28,17 +29,17 @@ public class BeansConfig {
     }
 
     @Bean
-    public FedexClientMock fedexClient(ProveedorProperties properties) {
+    public ProveedorClient fedexClient(ProveedorProperties properties) {
         return new FedexClientMock(properties.getFedex());
     }
 
     @Bean
-    public DhlClientMock dhlClient(ProveedorProperties properties) {
+    public ProveedorClient dhlClient(ProveedorProperties properties) {
         return new DhlClientMock(properties.getDhl());
     }
 
     @Bean
-    public LocalClientMock localClient(ProveedorProperties properties) {
+    public ProveedorClient localClient(ProveedorProperties properties) {
         return new LocalClientMock(properties.getLocal());
     }
 }
