@@ -2,17 +2,20 @@ package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
+import com.sofka.optimizador_envios_backend.config.exception.GlobalExceptionHandler;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.UbicacionDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -22,19 +25,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PedidoController.class)
+@ExtendWith(MockitoExtension.class)
 class PedidoControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
+    @Mock
     private ObtenerRecomendacionUseCase obtenerRecomendacionUseCase;
 
-    // ─── helpers ────────────────────────────────────────────────────────────
+    private MockMvc mockMvc;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeEach
+    void setUp() {
+        PedidoController controller = new PedidoController(obtenerRecomendacionUseCase);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+    }
+
+    // ─── helpers ─────────────────────────────────────────
 
     private PedidoRequestDto buildRequest(Double weight, String weightUnit, String priority) {
         UbicacionDto origin      = new UbicacionDto("Tunja, BY, Colombia",   5.53528,  -73.36778);
@@ -43,13 +52,14 @@ class PedidoControllerTest {
         return new PedidoRequestDto(order);
     }
 
-    // ─── happy path ──────────────────────────────────────────────────────────
+    // ─── happy path ──────────────────────────────────────
 
     @Test
     void dadoPedidoValido_cuandoPrioridadCost_entoncesRetorna200ConRecomendacionYAlternativas() throws Exception {
         Cotizacion recomendada = new Cotizacion("Local",  45000, 2);
         Cotizacion alt1        = new Cotizacion("FedEx",  55000, 1);
         Cotizacion alt2        = new Cotizacion("DHL",    60000, 1);
+
         when(obtenerRecomendacionUseCase.obtenerRecomendacion(any()))
                 .thenReturn(new Recomendacion(recomendada, List.of(alt1, alt2)));
 
@@ -69,6 +79,7 @@ class PedidoControllerTest {
         Cotizacion recomendada = new Cotizacion("DHL",   60000, 1);
         Cotizacion alt1        = new Cotizacion("FedEx", 55000, 1);
         Cotizacion alt2        = new Cotizacion("Local", 45000, 2);
+
         when(obtenerRecomendacionUseCase.obtenerRecomendacion(any()))
                 .thenReturn(new Recomendacion(recomendada, List.of(alt1, alt2)));
 
@@ -80,7 +91,7 @@ class PedidoControllerTest {
                 .andExpect(jsonPath("$.recommendation.estimatedDays").value(1));
     }
 
-    // ─── validaciones ────────────────────────────────────────────────────────
+    // ─── validaciones ────────────────────────────────────
 
     @Test
     void dadoPedidoConPesoCero_cuandoSeEnvia_entoncesRetorna400() throws Exception {
@@ -113,6 +124,7 @@ class PedidoControllerTest {
                 new UbicacionDto("Bogotá, DC, Colombia", 4.635456, -74.08768),
                 5.0, "KILOGRAMS", "COST"
         );
+
         PedidoRequestDto request = new PedidoRequestDto(order);
 
         mockMvc.perform(post("/api/v1/pedido")
