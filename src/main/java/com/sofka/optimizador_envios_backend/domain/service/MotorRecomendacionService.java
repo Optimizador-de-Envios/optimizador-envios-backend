@@ -10,8 +10,8 @@ public class MotorRecomendacionService {
 
     private final EstrategiaFactory estrategiaFactory;
 
-    public MotorRecomendacionService() {
-        this.estrategiaFactory = new EstrategiaFactory();
+    public MotorRecomendacionService(EstrategiaFactory estrategiaFactory) {
+        this.estrategiaFactory = estrategiaFactory;
     }
 
     public Recomendacion recomendar(List<Cotizacion> cotizaciones, Prioridad prioridad) {

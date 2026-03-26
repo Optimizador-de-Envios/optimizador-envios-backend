@@ -16,7 +16,7 @@ class MotorRecomendacionServiceTest {
 
     @BeforeEach
     void setUp() {
-        motorRecomendacionService = new MotorRecomendacionService();
+        motorRecomendacionService = new MotorRecomendacionService(new EstrategiaFactory());
     }
 
     // R5: Prioridad COST → recomendar menor costo
