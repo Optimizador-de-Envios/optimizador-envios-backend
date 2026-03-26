@@ -71,7 +71,7 @@ class OpenRouteServiceAdapterTest {
         // Tunja: lng=-73.36778   lat=5.53528  → start=-73.36778,5.53528
         // Bogotá: lng=-74.08768  lat=4.635456 → end=-74.08768,4.635456
         verify(restTemplate).getForObject(
-                argThat(url -> url.contains("start=-73.36778,5.53528")
+                argThat((String url) -> url.contains("start=-73.36778,5.53528")
                              && url.contains("end=-74.08768,4.635456")),
                 eq(String.class)
         );
@@ -94,7 +94,7 @@ class OpenRouteServiceAdapterTest {
         adapter.obtenerDistanciaKm(tunja, bogota);
 
         verify(restTemplate).getForObject(
-                argThat(url -> url.contains("api_key=test-api-key")),
+                argThat((String url) -> url.contains("api_key=test-api-key")),
                 eq(String.class)
         );
     }
