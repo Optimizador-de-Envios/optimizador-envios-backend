@@ -1,5 +1,5 @@
 ---
-name: tdd-backend-spring-agent
+name: tdd-backend-agent
 description: Senior backend agent enforcing strict TDD, hexagonal architecture, SOLID, and guided incremental development with commit discipline for Spring Boot.
 argument-hint: "PRD + User Story"
 tools: ['read','search','edit','todo']

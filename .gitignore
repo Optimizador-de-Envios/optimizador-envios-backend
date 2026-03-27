@@ -41,3 +41,6 @@ dist/
 build/
 target/
 **/target/
+
+# Local env file (do NOT commit secrets)
+.env
