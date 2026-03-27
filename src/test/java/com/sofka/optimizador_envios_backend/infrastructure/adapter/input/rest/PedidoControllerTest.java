@@ -8,6 +8,7 @@ import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.UbicacionDto;
+import com.sofka.optimizador_envios_backend.infrastructure.mapper.PedidoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ class PedidoControllerTest {
 
     @BeforeEach
     void setUp() {
-        PedidoController controller = new PedidoController(obtenerRecomendacionUseCase);
+        PedidoController controller = new PedidoController(obtenerRecomendacionUseCase, new PedidoMapper());
         mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())

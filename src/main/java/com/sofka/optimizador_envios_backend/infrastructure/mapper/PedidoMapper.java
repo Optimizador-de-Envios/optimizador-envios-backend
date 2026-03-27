@@ -12,11 +12,12 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dt
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PedidoMapper {
 
-    private PedidoMapper() {}
-
-    public static Pedido toDomain(PedidoRequestDto dto) {
+    public Pedido toDomain(PedidoRequestDto dto) {
         var order = dto.order();
         Ubicacion origen  = new Ubicacion(order.origin().name(),      order.origin().lat(),      order.origin().lng());
         Ubicacion destino = new Ubicacion(order.destination().name(), order.destination().lat(), order.destination().lng());
@@ -29,15 +30,15 @@ public class PedidoMapper {
         );
     }
 
-    public static RecomendacionResponseDto toResponseDto(Recomendacion recomendacion) {
+    public RecomendacionResponseDto toResponseDto(Recomendacion recomendacion) {
         CotizacionDto recomendada = toDto(recomendacion.recomendada());
         List<CotizacionDto> alternativas = recomendacion.alternativas().stream()
-                .map(PedidoMapper::toDto)
+                .map(this::toDto)
                 .toList();
         return new RecomendacionResponseDto(recomendada, alternativas);
     }
 
-    private static CotizacionDto toDto(Cotizacion cotizacion) {
+    private CotizacionDto toDto(Cotizacion cotizacion) {
         return new CotizacionDto(
                 cotizacion.nombreProveedor(),
                 cotizacion.costo(),

@@ -1,6 +1,7 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest;
 
 import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
+import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.RecomendacionResponseDto;
@@ -17,16 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController {
 
     private final ObtenerRecomendacionUseCase obtenerRecomendacionUseCase;
+    private final PedidoMapper pedidoMapper;
 
-    public PedidoController(ObtenerRecomendacionUseCase obtenerRecomendacionUseCase) {
+    public PedidoController(ObtenerRecomendacionUseCase obtenerRecomendacionUseCase,
+                            PedidoMapper pedidoMapper) {
         this.obtenerRecomendacionUseCase = obtenerRecomendacionUseCase;
+        this.pedidoMapper = pedidoMapper;
     }
 
     @PostMapping
     public ResponseEntity<RecomendacionResponseDto> obtenerRecomendacion(
             @Valid @RequestBody PedidoRequestDto request) {
         Recomendacion recomendacion = obtenerRecomendacionUseCase
-                .obtenerRecomendacion(PedidoMapper.toDomain(request));
-        return ResponseEntity.ok(PedidoMapper.toResponseDto(recomendacion));
+                .obtenerRecomendacion(pedidoMapper.toDomain(request));
+        return ResponseEntity.ok(pedidoMapper.toResponseDto(recomendacion));
     }
 }
