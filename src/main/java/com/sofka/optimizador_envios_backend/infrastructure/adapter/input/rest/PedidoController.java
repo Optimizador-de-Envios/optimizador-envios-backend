@@ -1,7 +1,6 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest;
 
 import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
-import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.RecomendacionResponseDto;
