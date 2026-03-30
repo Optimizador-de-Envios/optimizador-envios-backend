@@ -1,8 +1,8 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest;
 
 import com.sofka.optimizador_envios_backend.application.port.input.ConfirmarPedidoUseCase;
-import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
+import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoResponseDto;
@@ -41,14 +41,14 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoMapper.toResponseDto(recomendacion));
     }
 
-        @PostMapping("/confirmar")
-        public ResponseEntity<ConfirmacionPedidoResponseDto> confirmarPedido(
+    @PostMapping("/confirmar")
+    public ResponseEntity<ConfirmacionPedidoResponseDto> confirmarPedido(
             @Valid @RequestBody ConfirmacionPedidoRequestDto request) {
         ConfirmacionPedido confirmacionPedido = confirmarPedidoUseCase.confirmar(
-            pedidoMapper.toDomain(request),
-            pedidoMapper.toDomain(request.selectedOption())
+                pedidoMapper.toDomain(request),
+                pedidoMapper.toDomain(request.selectedOption())
         );
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(pedidoMapper.toResponseDto(confirmacionPedido));
-        }
+                .body(pedidoMapper.toResponseDto(confirmacionPedido));
+    }
 }

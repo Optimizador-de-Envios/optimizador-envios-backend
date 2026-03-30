@@ -10,6 +10,7 @@ import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.CotizacionDto;
+import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.RecomendacionResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.SelectedOptionDto;
@@ -60,9 +61,9 @@ public class PedidoMapper {
         );
     }
 
-    private Pedido toDomain(com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto order) {
-        Ubicacion origen = new Ubicacion(order.origin().name(), order.origin().lat(), order.origin().lng());
-        Ubicacion destino = new Ubicacion(order.destination().name(), order.destination().lat(), order.destination().lng());
+    private Pedido toDomain(OrderDto order) {
+        Ubicacion origen = toDomain(order.origin());
+        Ubicacion destino = toDomain(order.destination());
         return new Pedido(
                 origen,
                 destino,
@@ -83,5 +84,9 @@ public class PedidoMapper {
 
     private UbicacionDto toDto(Ubicacion ubicacion) {
         return new UbicacionDto(ubicacion.nombre(), ubicacion.lat(), ubicacion.lng());
+    }
+
+    private Ubicacion toDomain(UbicacionDto ubicacion) {
+        return new Ubicacion(ubicacion.name(), ubicacion.lat(), ubicacion.lng());
     }
 }

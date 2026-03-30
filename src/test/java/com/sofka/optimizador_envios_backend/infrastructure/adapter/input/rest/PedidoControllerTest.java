@@ -9,6 +9,9 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
+import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
+import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
@@ -60,7 +63,7 @@ class PedidoControllerTest {
     // ─── helpers ─────────────────────────────────────────
 
     private PedidoRequestDto buildRequest(Double weight, String weightUnit, String priority) {
-        UbicacionDto origin      = new UbicacionDto("Tunja, BY, Colombia",   5.53528,  -73.36778);
+                UbicacionDto origin = new UbicacionDto("Tunja, BY, Colombia", 5.53528, -73.36778);
         UbicacionDto destination = new UbicacionDto("Bogotá, DC, Colombia",  4.635456, -74.08768);
         OrderDto order = new OrderDto(origin, destination, weight, weightUnit, priority);
         return new PedidoRequestDto(order);
@@ -74,6 +77,16 @@ class PedidoControllerTest {
                 OrderDto order = new OrderDto(origin, destination, weight, weightUnit, priority);
                 SelectedOptionDto selectedOption = new SelectedOptionDto(providerName, cost, currency, estimatedDays);
                 return new ConfirmacionPedidoRequestDto(order, selectedOption);
+        }
+
+        private Pedido buildConfirmedPedido() {
+                return new Pedido(
+                                new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
+                                new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
+                                10.0,
+                                UnidadPeso.KILOGRAMS,
+                                Prioridad.COST
+                );
         }
 
     // ─── happy path ──────────────────────────────────────
@@ -159,13 +172,7 @@ class PedidoControllerTest {
 
     @Test
     void dadoPedidoConfirmadoValido_cuandoSeConfirmaProveedor_entoncesRetorna201ConLaConfirmacionGuardada() throws Exception {
-        Pedido pedido = new Pedido(
-                new com.sofka.optimizador_envios_backend.domain.model.Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
-                new com.sofka.optimizador_envios_backend.domain.model.Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
-                10.0,
-                com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso.KILOGRAMS,
-                com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad.COST
-        );
+        Pedido pedido = buildConfirmedPedido();
         Cotizacion seleccionada = new Cotizacion("Local", 30386.59, "COP", 1);
         ConfirmacionPedido confirmacion = new ConfirmacionPedido("abc-123", pedido, 148.3, seleccionada);
 
