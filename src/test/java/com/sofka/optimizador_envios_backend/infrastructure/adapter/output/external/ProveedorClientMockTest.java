@@ -46,6 +46,7 @@ class ProveedorClientMockTest {
         Cotizacion cotizacion = fedex.cotizar(pedido, 150.0);
 
         assertEquals(65000.0, cotizacion.costo());
+        assertEquals("COP", cotizacion.moneda());
         assertEquals(1, cotizacion.diasEntrega());
     }
 
@@ -57,6 +58,7 @@ class ProveedorClientMockTest {
         Cotizacion cotizacion = dhl.cotizar(pedido, 150.0);
 
         assertEquals(72000.0, cotizacion.costo());
+        assertEquals("COP", cotizacion.moneda());
         assertEquals(1, cotizacion.diasEntrega());
     }
 
@@ -68,6 +70,7 @@ class ProveedorClientMockTest {
         Cotizacion cotizacion = local.cotizar(pedido, 150.0);
 
         assertEquals(50500.0, cotizacion.costo());
+        assertEquals("COP", cotizacion.moneda());
         assertEquals(1, cotizacion.diasEntrega());
     }
 

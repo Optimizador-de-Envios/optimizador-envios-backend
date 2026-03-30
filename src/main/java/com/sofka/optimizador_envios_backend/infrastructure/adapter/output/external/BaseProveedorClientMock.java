@@ -23,7 +23,7 @@ public abstract class BaseProveedorClientMock implements ProveedorClient {
                 + (pesoKg * config.getPrecioPorKg())
                 + (distanciaKm * config.getPrecioPorKm());
         int dias = (int) Math.ceil(distanciaKm / config.getKmPorDia());
-        return new Cotizacion(nombreProveedor(), costo, dias);
+        return new Cotizacion(nombreProveedor(), costo, "COP", dias);
     }
 
     private double convertirAKg(double peso, UnidadPeso unidad) {
