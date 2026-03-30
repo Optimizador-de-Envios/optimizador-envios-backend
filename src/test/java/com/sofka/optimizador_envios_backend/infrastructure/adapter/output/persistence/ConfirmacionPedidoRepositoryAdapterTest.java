@@ -49,8 +49,40 @@ class ConfirmacionPedidoRepositoryAdapterTest {
                 new Cotizacion("Local", 30386.59, "COP", 1)
         );
 
-        ConfirmacionPedidoEntity entity = new ConfirmacionPedidoEntity();
-        ConfirmacionPedidoEntity savedEntity = new ConfirmacionPedidoEntity();
+        ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
+            null,
+            "Tunja, BY, Colombia",
+            5.53528,
+            -73.36778,
+            "Bogotá, DC, Colombia",
+            4.635456,
+            -74.08768,
+            10.0,
+            "KILOGRAMS",
+            "COST",
+            148.3,
+            "Local",
+            30386.59,
+            "COP",
+            1
+        );
+        ConfirmacionPedidoEntity savedEntity = ConfirmacionPedidoEntity.of(
+            "abc-123",
+            "Tunja, BY, Colombia",
+            5.53528,
+            -73.36778,
+            "Bogotá, DC, Colombia",
+            4.635456,
+            -74.08768,
+            10.0,
+            "KILOGRAMS",
+            "COST",
+            148.3,
+            "Local",
+            30386.59,
+            "COP",
+            1
+        );
         ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido(
                 "abc-123",
                 confirmacionPendiente.pedido(),

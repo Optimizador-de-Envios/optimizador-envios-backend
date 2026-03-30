@@ -6,7 +6,9 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
 
     private final CotizarPedidoService cotizarPedidoService;

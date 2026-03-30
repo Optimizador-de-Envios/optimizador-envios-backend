@@ -57,6 +57,79 @@ public class ConfirmacionPedidoEntity {
     @Column(nullable = false)
     private int selectedEstimatedDays;
 
+        protected ConfirmacionPedidoEntity() {
+        }
+
+        private ConfirmacionPedidoEntity(
+            String id,
+            String originName,
+            double originLat,
+            double originLng,
+            String destinationName,
+            double destinationLat,
+            double destinationLng,
+            double weight,
+            String weightUnit,
+            String priority,
+            double distanceKm,
+            String selectedProviderName,
+            double selectedCost,
+            String selectedCurrency,
+            int selectedEstimatedDays
+        ) {
+        this.id = id;
+        this.originName = originName;
+        this.originLat = originLat;
+        this.originLng = originLng;
+        this.destinationName = destinationName;
+        this.destinationLat = destinationLat;
+        this.destinationLng = destinationLng;
+        this.weight = weight;
+        this.weightUnit = weightUnit;
+        this.priority = priority;
+        this.distanceKm = distanceKm;
+        this.selectedProviderName = selectedProviderName;
+        this.selectedCost = selectedCost;
+        this.selectedCurrency = selectedCurrency;
+        this.selectedEstimatedDays = selectedEstimatedDays;
+        }
+
+        public static ConfirmacionPedidoEntity of(
+            String id,
+            String originName,
+            double originLat,
+            double originLng,
+            String destinationName,
+            double destinationLat,
+            double destinationLng,
+            double weight,
+            String weightUnit,
+            String priority,
+            double distanceKm,
+            String selectedProviderName,
+            double selectedCost,
+            String selectedCurrency,
+            int selectedEstimatedDays
+        ) {
+        return new ConfirmacionPedidoEntity(
+            id,
+            originName,
+            originLat,
+            originLng,
+            destinationName,
+            destinationLat,
+            destinationLng,
+            weight,
+            weightUnit,
+            priority,
+            distanceKm,
+            selectedProviderName,
+            selectedCost,
+            selectedCurrency,
+            selectedEstimatedDays
+        );
+        }
+
     @PrePersist
     void assignIdIfMissing() {
         if (id == null || id.isBlank()) {
@@ -68,119 +141,59 @@ public class ConfirmacionPedidoEntity {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getOriginName() {
         return originName;
-    }
-
-    public void setOriginName(String originName) {
-        this.originName = originName;
     }
 
     public double getOriginLat() {
         return originLat;
     }
 
-    public void setOriginLat(double originLat) {
-        this.originLat = originLat;
-    }
-
     public double getOriginLng() {
         return originLng;
-    }
-
-    public void setOriginLng(double originLng) {
-        this.originLng = originLng;
     }
 
     public String getDestinationName() {
         return destinationName;
     }
 
-    public void setDestinationName(String destinationName) {
-        this.destinationName = destinationName;
-    }
-
     public double getDestinationLat() {
         return destinationLat;
-    }
-
-    public void setDestinationLat(double destinationLat) {
-        this.destinationLat = destinationLat;
     }
 
     public double getDestinationLng() {
         return destinationLng;
     }
 
-    public void setDestinationLng(double destinationLng) {
-        this.destinationLng = destinationLng;
-    }
-
     public double getWeight() {
         return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     public String getWeightUnit() {
         return weightUnit;
     }
 
-    public void setWeightUnit(String weightUnit) {
-        this.weightUnit = weightUnit;
-    }
-
     public String getPriority() {
         return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
     }
 
     public double getDistanceKm() {
         return distanceKm;
     }
 
-    public void setDistanceKm(double distanceKm) {
-        this.distanceKm = distanceKm;
-    }
-
     public String getSelectedProviderName() {
         return selectedProviderName;
-    }
-
-    public void setSelectedProviderName(String selectedProviderName) {
-        this.selectedProviderName = selectedProviderName;
     }
 
     public double getSelectedCost() {
         return selectedCost;
     }
 
-    public void setSelectedCost(double selectedCost) {
-        this.selectedCost = selectedCost;
-    }
-
     public String getSelectedCurrency() {
         return selectedCurrency;
     }
 
-    public void setSelectedCurrency(String selectedCurrency) {
-        this.selectedCurrency = selectedCurrency;
-    }
-
     public int getSelectedEstimatedDays() {
         return selectedEstimatedDays;
-    }
-
-    public void setSelectedEstimatedDays(int selectedEstimatedDays) {
-        this.selectedEstimatedDays = selectedEstimatedDays;
     }
 }

@@ -57,22 +57,23 @@ class ConfirmacionPedidoEntityMapperTest {
 
     @Test
     void dadaEntidadPersistida_cuandoSeMapeaADominio_entoncesDebeReconstruirLaConfirmacionCompleta() {
-        ConfirmacionPedidoEntity entity = new ConfirmacionPedidoEntity();
-        entity.setId("abc-123");
-        entity.setOriginName("Tunja, BY, Colombia");
-        entity.setOriginLat(5.53528);
-        entity.setOriginLng(-73.36778);
-        entity.setDestinationName("Bogotá, DC, Colombia");
-        entity.setDestinationLat(4.635456);
-        entity.setDestinationLng(-74.08768);
-        entity.setWeight(10.0);
-        entity.setWeightUnit("KILOGRAMS");
-        entity.setPriority("COST");
-        entity.setDistanceKm(148.3);
-        entity.setSelectedProviderName("Local");
-        entity.setSelectedCost(30386.59);
-        entity.setSelectedCurrency("COP");
-        entity.setSelectedEstimatedDays(1);
+        ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
+            "abc-123",
+            "Tunja, BY, Colombia",
+            5.53528,
+            -73.36778,
+            "Bogotá, DC, Colombia",
+            4.635456,
+            -74.08768,
+            10.0,
+            "KILOGRAMS",
+            "COST",
+            148.3,
+            "Local",
+            30386.59,
+            "COP",
+            1
+        );
 
         ConfirmacionPedido confirmacion = mapper.toDomain(entity);
 

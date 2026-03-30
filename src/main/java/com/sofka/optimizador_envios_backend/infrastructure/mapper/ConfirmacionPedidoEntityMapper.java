@@ -13,23 +13,23 @@ import org.springframework.stereotype.Component;
 public class ConfirmacionPedidoEntityMapper {
 
     public ConfirmacionPedidoEntity toEntity(ConfirmacionPedido confirmacion) {
-        ConfirmacionPedidoEntity entity = new ConfirmacionPedidoEntity();
-        entity.setId(confirmacion.id());
-        entity.setOriginName(confirmacion.pedido().origen().nombre());
-        entity.setOriginLat(confirmacion.pedido().origen().lat());
-        entity.setOriginLng(confirmacion.pedido().origen().lng());
-        entity.setDestinationName(confirmacion.pedido().destino().nombre());
-        entity.setDestinationLat(confirmacion.pedido().destino().lat());
-        entity.setDestinationLng(confirmacion.pedido().destino().lng());
-        entity.setWeight(confirmacion.pedido().peso());
-        entity.setWeightUnit(confirmacion.pedido().unidadPeso().name());
-        entity.setPriority(confirmacion.pedido().prioridad().name());
-        entity.setDistanceKm(confirmacion.distanciaKm());
-        entity.setSelectedProviderName(confirmacion.opcionSeleccionada().nombreProveedor());
-        entity.setSelectedCost(confirmacion.opcionSeleccionada().costo());
-        entity.setSelectedCurrency(confirmacion.opcionSeleccionada().moneda());
-        entity.setSelectedEstimatedDays(confirmacion.opcionSeleccionada().diasEntrega());
-        return entity;
+    return ConfirmacionPedidoEntity.of(
+        confirmacion.id(),
+        confirmacion.pedido().origen().nombre(),
+        confirmacion.pedido().origen().lat(),
+        confirmacion.pedido().origen().lng(),
+        confirmacion.pedido().destino().nombre(),
+        confirmacion.pedido().destino().lat(),
+        confirmacion.pedido().destino().lng(),
+        confirmacion.pedido().peso(),
+        confirmacion.pedido().unidadPeso().name(),
+        confirmacion.pedido().prioridad().name(),
+        confirmacion.distanciaKm(),
+        confirmacion.opcionSeleccionada().nombreProveedor(),
+        confirmacion.opcionSeleccionada().costo(),
+        confirmacion.opcionSeleccionada().moneda(),
+        confirmacion.opcionSeleccionada().diasEntrega()
+    );
     }
 
     public ConfirmacionPedido toDomain(ConfirmacionPedidoEntity entity) {
