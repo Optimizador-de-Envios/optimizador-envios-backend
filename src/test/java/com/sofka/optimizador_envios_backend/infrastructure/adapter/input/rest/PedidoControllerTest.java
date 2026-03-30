@@ -57,9 +57,9 @@ class PedidoControllerTest {
 
     @Test
     void dadoPedidoValido_cuandoPrioridadCost_entoncesRetorna200ConRecomendacionYAlternativas() throws Exception {
-        Cotizacion recomendada = new Cotizacion("Local",  45000, 2);
-        Cotizacion alt1        = new Cotizacion("FedEx",  55000, 1);
-        Cotizacion alt2        = new Cotizacion("DHL",    60000, 1);
+        Cotizacion recomendada = new Cotizacion("Local",  45000, "COP", 2);
+        Cotizacion alt1        = new Cotizacion("FedEx",  55000, "COP", 1);
+        Cotizacion alt2        = new Cotizacion("DHL",    60000, "COP", 1);
 
         when(obtenerRecomendacionUseCase.obtenerRecomendacion(any()))
                 .thenReturn(new Recomendacion(recomendada, List.of(alt1, alt2)));
@@ -77,9 +77,9 @@ class PedidoControllerTest {
 
     @Test
     void dadoPedidoValido_cuandoPrioridadTime_entoncesRetorna200ConRecomendacionConMenorTiempo() throws Exception {
-        Cotizacion recomendada = new Cotizacion("DHL",   60000, 1);
-        Cotizacion alt1        = new Cotizacion("FedEx", 55000, 1);
-        Cotizacion alt2        = new Cotizacion("Local", 45000, 2);
+        Cotizacion recomendada = new Cotizacion("DHL",   60000, "COP", 1);
+        Cotizacion alt1        = new Cotizacion("FedEx", 55000, "COP", 1);
+        Cotizacion alt2        = new Cotizacion("Local", 45000, "COP", 2);
 
         when(obtenerRecomendacionUseCase.obtenerRecomendacion(any()))
                 .thenReturn(new Recomendacion(recomendada, List.of(alt1, alt2)));

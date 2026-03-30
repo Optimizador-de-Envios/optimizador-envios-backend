@@ -42,7 +42,7 @@ public class PedidoMapper {
         return new CotizacionDto(
                 cotizacion.nombreProveedor(),
                 cotizacion.costo(),
-                "COP",
+                cotizacion.moneda(),
                 cotizacion.diasEntrega()
         );
     }

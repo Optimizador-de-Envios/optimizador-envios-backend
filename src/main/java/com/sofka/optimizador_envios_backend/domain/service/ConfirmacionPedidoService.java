@@ -19,15 +19,13 @@ public class ConfirmacionPedidoService {
             throw new PedidoInvalidoException("Se debe seleccionar un proveedor para continuar");
         }
 
-        boolean coincideConCotizaciones = cotizacionesDisponibles.stream()
-                .anyMatch(cotizacion -> cotizacion.nombreProveedor().equals(opcionSeleccionada.nombreProveedor())
-                        && cotizacion.costo() == opcionSeleccionada.costo()
-                        && cotizacion.diasEntrega() == opcionSeleccionada.diasEntrega());
+        Cotizacion opcionValidada = cotizacionesDisponibles.stream()
+            .filter(cotizacion -> cotizacion.coincideCon(opcionSeleccionada))
+            .findFirst()
+            .orElseThrow(() -> new PedidoInvalidoException(
+                "La opcion seleccionada no coincide con las cotizaciones disponibles"
+            ));
 
-        if (!coincideConCotizaciones) {
-            throw new PedidoInvalidoException("La opcion seleccionada no coincide con las cotizaciones disponibles");
-        }
-
-        return new ConfirmacionPedido(null, pedido, distanciaKm, opcionSeleccionada);
+        return new ConfirmacionPedido(null, pedido, distanciaKm, opcionValidada);
     }
 }

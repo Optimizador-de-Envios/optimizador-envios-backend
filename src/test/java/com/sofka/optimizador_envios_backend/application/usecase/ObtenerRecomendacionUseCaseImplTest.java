@@ -55,9 +55,9 @@ class ObtenerRecomendacionUseCaseImplTest {
     @Test
     void dadoUnPedidoValido_cuandoSeObtieneLaRecomendacion_entoncesDebeConsultarLaDistancia() {
         when(distanciaClient.obtenerDistanciaKm(pedidoCosto.origen(), pedidoCosto.destino())).thenReturn(150.0);
-        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, 1));
-        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, 1));
-        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, 2));
+        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, "COP", 1));
+        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, "COP", 1));
+        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, "COP", 2));
 
         useCase.obtenerRecomendacion(pedidoCosto);
 
@@ -67,9 +67,9 @@ class ObtenerRecomendacionUseCaseImplTest {
     @Test
     void dadoUnPedidoValido_cuandoSeObtieneLaRecomendacion_entoncesDebeConsultarTodosLosProveedores() {
         when(distanciaClient.obtenerDistanciaKm(pedidoCosto.origen(), pedidoCosto.destino())).thenReturn(150.0);
-        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, 1));
-        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, 1));
-        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, 2));
+        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, "COP", 1));
+        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, "COP", 1));
+        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, "COP", 2));
 
         useCase.obtenerRecomendacion(pedidoCosto);
 
@@ -81,9 +81,9 @@ class ObtenerRecomendacionUseCaseImplTest {
     @Test
     void dadoPrioridadCosto_cuandoSeObtieneLaRecomendacion_entoncesDebeRetornarMenorCosto() {
         when(distanciaClient.obtenerDistanciaKm(pedidoCosto.origen(), pedidoCosto.destino())).thenReturn(150.0);
-        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, 1));
-        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, 1));
-        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, 2));
+        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, "COP", 1));
+        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, "COP", 1));
+        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, "COP", 2));
 
         Recomendacion resultado = useCase.obtenerRecomendacion(pedidoCosto);
 
@@ -97,9 +97,9 @@ class ObtenerRecomendacionUseCaseImplTest {
                 pedidoCosto.peso(), pedidoCosto.unidadPeso(), Prioridad.TIME
         );
         when(distanciaClient.obtenerDistanciaKm(pedidoTiempo.origen(), pedidoTiempo.destino())).thenReturn(150.0);
-        when(fedexClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, 1));
-        when(dhlClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, 2));
-        when(localClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, 3));
+        when(fedexClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, "COP", 1));
+        when(dhlClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, "COP", 2));
+        when(localClient.cotizar(pedidoTiempo, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, "COP", 3));
 
         Recomendacion resultado = useCase.obtenerRecomendacion(pedidoTiempo);
 
@@ -109,9 +109,9 @@ class ObtenerRecomendacionUseCaseImplTest {
     @Test
     void dadoUnaRecomendacion_entoncesLasAlternativasNoDebenContenerLaRecomendada() {
         when(distanciaClient.obtenerDistanciaKm(pedidoCosto.origen(), pedidoCosto.destino())).thenReturn(150.0);
-        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, 1));
-        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, 1));
-        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, 2));
+        when(fedexClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("FedEx", 28000.0, "COP", 1));
+        when(dhlClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("DHL", 22500.0, "COP", 1));
+        when(localClient.cotizar(pedidoCosto, 150.0)).thenReturn(new Cotizacion("Local", 18000.0, "COP", 2));
 
         Recomendacion resultado = useCase.obtenerRecomendacion(pedidoCosto);
 

@@ -22,9 +22,9 @@ class MotorRecomendacionServiceTest {
     // R5: Prioridad COST → recomendar menor costo
     @Test
     void dadoPrioridadCosto_cuandoHayOpcionesDisponibles_entoncesDebeRecomendarMenorCosto() {
-        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, 1);
-        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, 2);
-        Cotizacion local = new Cotizacion("Local", 18000.0, 3);
+        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, "COP", 1);
+        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, "COP", 2);
+        Cotizacion local = new Cotizacion("Local", 18000.0, "COP", 3);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex, dhl, local), Prioridad.COST
@@ -36,9 +36,9 @@ class MotorRecomendacionServiceTest {
     // R6: Prioridad TIME → recomendar menor tiempo
     @Test
     void dadoPrioridadTiempo_cuandoHayOpcionesDisponibles_entoncesDebeRecomendarMenorTiempo() {
-        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, 1);
-        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, 2);
-        Cotizacion local = new Cotizacion("Local", 18000.0, 3);
+        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, "COP", 1);
+        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, "COP", 2);
+        Cotizacion local = new Cotizacion("Local", 18000.0, "COP", 3);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex, dhl, local), Prioridad.TIME
@@ -50,9 +50,9 @@ class MotorRecomendacionServiceTest {
     // R7: Empate en costo → recomendar menor tiempo entre empatados
     @Test
     void dadoPrioridadCosto_cuandoHayEmpateDeCosto_entoncesDebeRecomendarMenorTiempoEntreEmpatados() {
-        Cotizacion fedex = new Cotizacion("FedEx", 18000.0, 3);
-        Cotizacion local = new Cotizacion("Local", 18000.0, 1);
-        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, 2);
+        Cotizacion fedex = new Cotizacion("FedEx", 18000.0, "COP", 3);
+        Cotizacion local = new Cotizacion("Local", 18000.0, "COP", 1);
+        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, "COP", 2);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex, local, dhl), Prioridad.COST
@@ -64,9 +64,9 @@ class MotorRecomendacionServiceTest {
     // R8: Empate en tiempo → recomendar menor costo entre empatados
     @Test
     void dadoPrioridadTiempo_cuandoHayEmpateDeTiempo_entoncesDebeRecomendarMenorCostoEntreEmpatados() {
-        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, 1);
-        Cotizacion local = new Cotizacion("Local", 18000.0, 1);
-        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, 2);
+        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, "COP", 1);
+        Cotizacion local = new Cotizacion("Local", 18000.0, "COP", 1);
+        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, "COP", 2);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex, local, dhl), Prioridad.TIME
@@ -78,9 +78,9 @@ class MotorRecomendacionServiceTest {
     // Las alternativas NO contienen la opción recomendada
     @Test
     void dadoRecomendacion_entoncesAlternativasNoDebenContenerLaRecomendada() {
-        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, 1);
-        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, 2);
-        Cotizacion local = new Cotizacion("Local", 18000.0, 3);
+        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, "COP", 1);
+        Cotizacion dhl   = new Cotizacion("DHL",   22500.0, "COP", 2);
+        Cotizacion local = new Cotizacion("Local", 18000.0, "COP", 3);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex, dhl, local), Prioridad.COST
@@ -96,7 +96,7 @@ class MotorRecomendacionServiceTest {
     // Con una sola opción, no hay alternativas
     @Test
     void dadoSoloUnaCotizacion_entoncesAlternativasDebenEstarVacias() {
-        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, 1);
+        Cotizacion fedex = new Cotizacion("FedEx", 28000.0, "COP", 1);
 
         Recomendacion resultado = motorRecomendacionService.recomendar(
                 List.of(fedex), Prioridad.COST

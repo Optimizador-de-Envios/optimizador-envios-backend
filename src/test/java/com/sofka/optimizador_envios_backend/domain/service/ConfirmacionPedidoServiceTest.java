@@ -41,7 +41,7 @@ class ConfirmacionPedidoServiceTest {
     @Test
     void dadoProveedorSeleccionadoQueNoCoincideConCotizaciones_cuandoSeConfirmaPedido_entoncesDebeLanzarExcepcion() {
         Pedido pedido = buildPedido();
-        Cotizacion seleccionInvalida = new Cotizacion("Local", 30387.59, 1);
+        Cotizacion seleccionInvalida = new Cotizacion("Local", 30387.59, "COP", 1);
 
         PedidoInvalidoException exception = assertThrows(
                 PedidoInvalidoException.class,
@@ -54,20 +54,23 @@ class ConfirmacionPedidoServiceTest {
     @Test
     void dadoProveedorSeleccionadoValido_cuandoSeConfirmaPedido_entoncesDebeConstruirConfirmacionPendienteDePersistencia() {
         Pedido pedido = buildPedido();
-        Cotizacion seleccionValida = new Cotizacion("Local", 30386.59, 1);
+        List<Cotizacion> cotizacionesDisponibles = cotizacionesDisponibles();
+        Cotizacion seleccionValida = new Cotizacion("Local", 30386.59, "COP", 1);
 
         ConfirmacionPedido confirmacion = confirmacionPedidoService.confirmar(
                 pedido,
                 seleccionValida,
-                cotizacionesDisponibles(),
+            cotizacionesDisponibles,
                 148.3
         );
 
         assertNull(confirmacion.id());
         assertSame(pedido, confirmacion.pedido());
         assertEquals(148.3, confirmacion.distanciaKm());
+        assertSame(cotizacionesDisponibles.get(2), confirmacion.opcionSeleccionada());
         assertEquals("Local", confirmacion.opcionSeleccionada().nombreProveedor());
         assertEquals(30386.59, confirmacion.opcionSeleccionada().costo());
+        assertEquals("COP", confirmacion.opcionSeleccionada().moneda());
         assertEquals(1, confirmacion.opcionSeleccionada().diasEntrega());
     }
 
@@ -83,9 +86,9 @@ class ConfirmacionPedidoServiceTest {
 
     private List<Cotizacion> cotizacionesDisponibles() {
         return List.of(
-                new Cotizacion("FedEx", 42100.0, 1),
-                new Cotizacion("DHL", 35500.0, 1),
-                new Cotizacion("Local", 30386.59, 1)
+                new Cotizacion("FedEx", 42100.0, "COP", 1),
+                new Cotizacion("DHL", 35500.0, "COP", 1),
+                new Cotizacion("Local", 30386.59, "COP", 1)
         );
     }
 }
