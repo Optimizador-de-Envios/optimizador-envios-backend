@@ -68,8 +68,8 @@ public class PedidoMapper {
                 origen,
                 destino,
                 order.weight(),
-                UnidadPeso.valueOf(order.weightUnit()),
-                Prioridad.valueOf(order.priority())
+                toUnidadPeso(order.weightUnit()),
+                toPrioridad(order.priority())
         );
     }
 
@@ -88,5 +88,21 @@ public class PedidoMapper {
 
     private Ubicacion toDomain(UbicacionDto ubicacion) {
         return new Ubicacion(ubicacion.name(), ubicacion.lat(), ubicacion.lng());
+    }
+
+    private UnidadPeso toUnidadPeso(String weightUnit) {
+        try {
+            return UnidadPeso.valueOf(weightUnit);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("La unidad de peso debe ser GRAMS, KILOGRAMS o POUNDS");
+        }
+    }
+
+    private Prioridad toPrioridad(String priority) {
+        try {
+            return Prioridad.valueOf(priority);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("La prioridad debe ser COST o TIME");
+        }
     }
 }
