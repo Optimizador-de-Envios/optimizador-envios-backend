@@ -61,9 +61,13 @@ class ConfirmarPedidoUseCaseImplTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new ConfirmarPedidoUseCaseImpl(
+        CotizarPedidoService cotizarPedidoService = new CotizarPedidoService(
                 distanciaClient,
-                List.of(fedexClient, dhlClient, localClient),
+                List.of(fedexClient, dhlClient, localClient)
+        );
+
+        useCase = new ConfirmarPedidoUseCaseImpl(
+                cotizarPedidoService,
                 confirmacionPedidoService,
                 confirmacionPedidoRepository
         );

@@ -1,6 +1,7 @@
 package com.sofka.optimizador_envios_backend.config;
 
 import com.sofka.optimizador_envios_backend.application.port.output.ProveedorClient;
+import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoService;
 import com.sofka.optimizador_envios_backend.domain.service.EstrategiaFactory;
 import com.sofka.optimizador_envios_backend.domain.service.MotorRecomendacionService;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.external.DhlClientMock;
@@ -26,6 +27,11 @@ public class BeansConfig {
     @Bean
     public MotorRecomendacionService motorRecomendacionService(EstrategiaFactory estrategiaFactory) {
         return new MotorRecomendacionService(estrategiaFactory);
+    }
+
+    @Bean
+    public ConfirmacionPedidoService confirmacionPedidoService() {
+        return new ConfirmacionPedidoService();
     }
 
     @Bean

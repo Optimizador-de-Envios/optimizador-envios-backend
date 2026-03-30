@@ -45,9 +45,13 @@ class ObtenerRecomendacionUseCaseImplTest {
 
     @BeforeEach
     void setUp() {
+        CotizarPedidoService cotizarPedidoService = new CotizarPedidoService(
+            distanciaClient,
+            List.of(fedexClient, dhlClient, localClient)
+        );
+
         useCase = new ObtenerRecomendacionUseCaseImpl(
-                distanciaClient,
-                List.of(fedexClient, dhlClient, localClient),
+            cotizarPedidoService,
                 new MotorRecomendacionService(new EstrategiaFactory())
         );
     }
