@@ -288,7 +288,7 @@ Escenario: Intento de consultar pedidos de otro usuario
 
 | Historia de Usuario | Estimación (Story Points) |
 |---------------------|---------------------------:|
-| HU-06 | 8 |
+| HU-06 | 5 |
 | HU-07 | 5 |
 | HU-08 | 3 |
 | HU-09 | 5 |
