@@ -51,6 +51,7 @@ public class PedidoMapper {
     public ConfirmacionPedidoResponseDto toResponseDto(ConfirmacionPedido confirmacionPedido) {
         return new ConfirmacionPedidoResponseDto(
                 confirmacionPedido.id(),
+                confirmacionPedido.confirmationToken(),
                 toDto(confirmacionPedido.pedido().origen()),
                 toDto(confirmacionPedido.pedido().destino()),
                 confirmacionPedido.pedido().peso(),
