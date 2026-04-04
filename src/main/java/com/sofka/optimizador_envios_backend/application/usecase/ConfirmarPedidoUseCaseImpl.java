@@ -6,6 +6,7 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoService;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,14 +28,14 @@ public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
 
     @Override
     public ConfirmacionPedido confirmar(String confirmationToken, Pedido pedido, Cotizacion opcionSeleccionada) {
-        confirmacionPedidoService.validarTokenConfirmacion(confirmationToken);
+        ConfirmationToken token = ConfirmationToken.of(confirmationToken);
 
-        return confirmacionPedidoRepository.buscarPorTokenConfirmacion(confirmationToken)
-                .orElseGet(() -> confirmarNuevoIntento(confirmationToken, pedido, opcionSeleccionada));
+        return confirmacionPedidoRepository.buscarPorTokenConfirmacion(token.value())
+            .orElseGet(() -> confirmarNuevoIntento(token, pedido, opcionSeleccionada));
     }
 
     private ConfirmacionPedido confirmarNuevoIntento(
-            String confirmationToken,
+            ConfirmationToken confirmationToken,
             Pedido pedido,
             Cotizacion opcionSeleccionada
     ) {

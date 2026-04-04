@@ -4,6 +4,7 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persistence.entity.ConfirmacionPedidoEntity;
@@ -39,9 +40,10 @@ class ConfirmacionPedidoRepositoryAdapterTest {
 
     @Test
     void dadaConfirmacionPendiente_cuandoSeGuarda_entoncesDebeMapearPersistirYRetornarElDominioGuardado() {
+        ConfirmationToken token = ConfirmationToken.of("token-123");
         ConfirmacionPedido confirmacionPendiente = new ConfirmacionPedido(
                 null,
-            "token-123",
+            token,
                 new Pedido(
                         new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
                         new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
@@ -91,7 +93,7 @@ class ConfirmacionPedidoRepositoryAdapterTest {
         );
         ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido(
                 "abc-123",
-            "token-123",
+            token,
                 confirmacionPendiente.pedido(),
                 148.3,
                 confirmacionPendiente.opcionSeleccionada()
@@ -111,6 +113,7 @@ class ConfirmacionPedidoRepositoryAdapterTest {
 
     @Test
     void dadoTokenConfirmacionPersistido_cuandoSeBuscaPorToken_entoncesDebeRetornarLaConfirmacionEncontrada() {
+        ConfirmationToken token = ConfirmationToken.of("token-123");
         ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
                 "abc-123",
                 "token-123",
@@ -131,7 +134,7 @@ class ConfirmacionPedidoRepositoryAdapterTest {
         );
         ConfirmacionPedido confirmacion = new ConfirmacionPedido(
                 "abc-123",
-                "token-123",
+            token,
                 new Pedido(
                         new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
                         new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),

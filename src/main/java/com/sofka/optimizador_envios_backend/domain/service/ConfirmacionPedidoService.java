@@ -4,26 +4,19 @@ import com.sofka.optimizador_envios_backend.domain.exception.PedidoInvalidoExcep
 import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 
 import java.util.List;
 
 public class ConfirmacionPedidoService {
 
-    public void validarTokenConfirmacion(String confirmationToken) {
-        if (confirmationToken == null || confirmationToken.isBlank()) {
-            throw new PedidoInvalidoException("El confirmationToken es obligatorio");
-        }
-    }
-
     public ConfirmacionPedido confirmar(
-            String confirmationToken,
+            ConfirmationToken confirmationToken,
             Pedido pedido,
             Cotizacion opcionSeleccionada,
             List<Cotizacion> cotizacionesDisponibles,
             double distanciaKm
     ) {
-        validarTokenConfirmacion(confirmationToken);
-
         Cotizacion opcionValidada = validarOpcionSeleccionada(opcionSeleccionada, cotizacionesDisponibles);
 
         return ConfirmacionPedido.pendiente(confirmationToken, pedido, distanciaKm, opcionValidada);

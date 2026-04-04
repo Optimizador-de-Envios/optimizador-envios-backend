@@ -9,6 +9,7 @@ import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
 import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoService;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -83,15 +85,16 @@ class ConfirmarPedidoUseCaseImplTest {
         Cotizacion fedex = new Cotizacion("FedEx", 42100.0, "COP", 1);
         Cotizacion dhl = new Cotizacion("DHL", 35500.0, "COP", 1);
         Cotizacion local = new Cotizacion("Local", 30386.59, "COP", 1);
-        ConfirmacionPedido confirmacionPendiente = new ConfirmacionPedido(null, CONFIRMATION_TOKEN, pedido, 148.3, local);
-        ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido("abc-123", CONFIRMATION_TOKEN, pedido, 148.3, local);
+        ConfirmationToken token = ConfirmationToken.of(CONFIRMATION_TOKEN);
+        ConfirmacionPedido confirmacionPendiente = new ConfirmacionPedido(null, token, pedido, 148.3, local);
+        ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido("abc-123", token, pedido, 148.3, local);
 
         when(confirmacionPedidoRepository.buscarPorTokenConfirmacion(CONFIRMATION_TOKEN)).thenReturn(Optional.empty());
         when(distanciaClient.obtenerDistanciaKm(pedido.origen(), pedido.destino())).thenReturn(148.3);
         when(fedexClient.cotizar(pedido, 148.3)).thenReturn(fedex);
         when(dhlClient.cotizar(pedido, 148.3)).thenReturn(dhl);
         when(localClient.cotizar(pedido, 148.3)).thenReturn(local);
-        when(confirmacionPedidoService.confirmar(CONFIRMATION_TOKEN, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3))
+        when(confirmacionPedidoService.confirmar(eq(token), eq(pedido), eq(opcionSeleccionada), eq(List.of(fedex, dhl, local)), eq(148.3)))
                 .thenReturn(confirmacionPendiente);
         when(confirmacionPedidoRepository.guardar(confirmacionPendiente)).thenReturn(confirmacionGuardada);
 
@@ -103,11 +106,11 @@ class ConfirmarPedidoUseCaseImplTest {
         verify(fedexClient).cotizar(pedido, 148.3);
         verify(dhlClient).cotizar(pedido, 148.3);
         verify(localClient).cotizar(pedido, 148.3);
-        verify(confirmacionPedidoService).confirmar(CONFIRMATION_TOKEN, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
+                verify(confirmacionPedidoService).confirmar(token, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
         verify(confirmacionPedidoRepository).guardar(confirmacionPendiente);
         assertSame(confirmacionGuardada, resultado);
         assertEquals("abc-123", resultado.id());
-        assertEquals(CONFIRMATION_TOKEN, resultado.confirmationToken());
+                assertEquals(CONFIRMATION_TOKEN, resultado.confirmationToken().value());
     }
 
     @Test
@@ -115,13 +118,14 @@ class ConfirmarPedidoUseCaseImplTest {
         Cotizacion fedex = new Cotizacion("FedEx", 42100.0, "COP", 1);
         Cotizacion dhl = new Cotizacion("DHL", 35500.0, "COP", 1);
         Cotizacion local = new Cotizacion("Local", 30386.59, "COP", 1);
+        ConfirmationToken token = ConfirmationToken.of(CONFIRMATION_TOKEN);
 
         when(confirmacionPedidoRepository.buscarPorTokenConfirmacion(CONFIRMATION_TOKEN)).thenReturn(Optional.empty());
         when(distanciaClient.obtenerDistanciaKm(pedido.origen(), pedido.destino())).thenReturn(148.3);
         when(fedexClient.cotizar(pedido, 148.3)).thenReturn(fedex);
         when(dhlClient.cotizar(pedido, 148.3)).thenReturn(dhl);
         when(localClient.cotizar(pedido, 148.3)).thenReturn(local);
-        when(confirmacionPedidoService.confirmar(CONFIRMATION_TOKEN, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3))
+        when(confirmacionPedidoService.confirmar(eq(token), eq(pedido), eq(opcionSeleccionada), eq(List.of(fedex, dhl, local)), eq(148.3)))
                 .thenThrow(new PedidoInvalidoException("La opcion seleccionada no coincide con las cotizaciones disponibles"));
 
         PedidoInvalidoException exception = assertThrows(
@@ -130,16 +134,16 @@ class ConfirmarPedidoUseCaseImplTest {
         );
 
         assertEquals("La opcion seleccionada no coincide con las cotizaciones disponibles", exception.getMessage());
-        verify(confirmacionPedidoService).validarTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository).buscarPorTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository, never()).guardar(any());
     }
 
     @Test
     void dadoConfirmationTokenYaPersistido_cuandoSeConfirmaMismoIntento_entoncesDebeRetornarLaMismaConfirmacionSinRecotizarNiPersistir() {
+        ConfirmationToken token = ConfirmationToken.of(CONFIRMATION_TOKEN);
         ConfirmacionPedido confirmacionExistente = new ConfirmacionPedido(
                 "abc-123",
-                CONFIRMATION_TOKEN,
+                token,
                 pedido,
                 148.3,
                 opcionSeleccionada
@@ -150,10 +154,9 @@ class ConfirmarPedidoUseCaseImplTest {
 
         ConfirmacionPedido resultado = useCase.confirmar(CONFIRMATION_TOKEN, pedido, opcionSeleccionada);
 
-        verify(confirmacionPedidoService).validarTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository).buscarPorTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository, never()).guardar(any());
-        verify(confirmacionPedidoService, never()).confirmar(any(), any(), any(), any(), any(Double.class));
+                verify(confirmacionPedidoService, never()).confirmar(any(), any(), any(), any(), any(Double.class));
         verifyNoInteractions(distanciaClient, fedexClient, dhlClient, localClient);
         assertSame(confirmacionExistente, resultado);
     }

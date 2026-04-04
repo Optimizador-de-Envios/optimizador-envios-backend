@@ -5,6 +5,7 @@ import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoRequestDto;
@@ -51,7 +52,7 @@ public class PedidoMapper {
     public ConfirmacionPedidoResponseDto toResponseDto(ConfirmacionPedido confirmacionPedido) {
         return new ConfirmacionPedidoResponseDto(
                 confirmacionPedido.id(),
-                confirmacionPedido.confirmationToken(),
+                confirmacionPedido.confirmationToken().value(),
                 toDto(confirmacionPedido.pedido().origen()),
                 toDto(confirmacionPedido.pedido().destino()),
                 confirmacionPedido.pedido().peso(),

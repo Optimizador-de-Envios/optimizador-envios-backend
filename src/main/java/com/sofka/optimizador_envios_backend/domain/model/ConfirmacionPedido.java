@@ -1,26 +1,27 @@
 package com.sofka.optimizador_envios_backend.domain.model;
 
 import com.sofka.optimizador_envios_backend.domain.exception.PedidoInvalidoException;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 
 public record ConfirmacionPedido(
-                String id,
-                String confirmationToken,
-                Pedido pedido,
-                double distanciaKm,
-                Cotizacion opcionSeleccionada
+        String id,
+        ConfirmationToken confirmationToken,
+        Pedido pedido,
+        double distanciaKm,
+        Cotizacion opcionSeleccionada
 ) {
 
         public ConfirmacionPedido {
-                if (confirmationToken == null || confirmationToken.isBlank()) {
+                if (confirmationToken == null) {
                         throw new PedidoInvalidoException("El confirmationToken es obligatorio");
                 }
         }
 
         public static ConfirmacionPedido pendiente(
-                        String confirmationToken,
-                        Pedido pedido,
-                        double distanciaKm,
-                        Cotizacion opcionSeleccionada
+                ConfirmationToken confirmationToken,
+                Pedido pedido,
+                double distanciaKm,
+                Cotizacion opcionSeleccionada
         ) {
                 return new ConfirmacionPedido(null, confirmationToken, pedido, distanciaKm, opcionSeleccionada);
         }

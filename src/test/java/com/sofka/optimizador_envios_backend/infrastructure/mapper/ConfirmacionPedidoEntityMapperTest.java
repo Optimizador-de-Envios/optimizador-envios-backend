@@ -4,6 +4,7 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persistence.entity.ConfirmacionPedidoEntity;
@@ -23,9 +24,10 @@ class ConfirmacionPedidoEntityMapperTest {
 
     @Test
     void dadaConfirmacionDeDominio_cuandoSeMapeaAEntidad_entoncesDebeCopiarTodosLosCampos() {
+        ConfirmationToken token = ConfirmationToken.of("token-123");
         ConfirmacionPedido confirmacion = new ConfirmacionPedido(
                 "abc-123",
-            "token-123",
+            token,
                 new Pedido(
                         new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
                         new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
@@ -59,6 +61,7 @@ class ConfirmacionPedidoEntityMapperTest {
 
     @Test
     void dadaEntidadPersistida_cuandoSeMapeaADominio_entoncesDebeReconstruirLaConfirmacionCompleta() {
+        ConfirmationToken token = ConfirmationToken.of("token-123");
         ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
             "abc-123",
             "token-123",
@@ -81,7 +84,7 @@ class ConfirmacionPedidoEntityMapperTest {
         ConfirmacionPedido confirmacion = mapper.toDomain(entity);
 
         assertEquals("abc-123", confirmacion.id());
-    assertEquals("token-123", confirmacion.confirmationToken());
+    assertEquals("token-123", confirmacion.confirmationToken().value());
         assertEquals("Tunja, BY, Colombia", confirmacion.pedido().origen().nombre());
         assertEquals(5.53528, confirmacion.pedido().origen().lat());
         assertEquals(-73.36778, confirmacion.pedido().origen().lng());

@@ -10,6 +10,7 @@ import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Recomendacion;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoRequestDto;
@@ -175,7 +176,7 @@ class PedidoControllerTest {
     void dadoPedidoConfirmadoValido_cuandoSeConfirmaProveedor_entoncesRetorna201ConLaConfirmacionGuardada() throws Exception {
         Pedido pedido = buildConfirmedPedido();
         Cotizacion seleccionada = new Cotizacion("Local", 30386.59, "COP", 1);
-        ConfirmacionPedido confirmacion = new ConfirmacionPedido("abc-123", "token-123", pedido, 148.3, seleccionada);
+                ConfirmacionPedido confirmacion = new ConfirmacionPedido("abc-123", ConfirmationToken.of("token-123"), pedido, 148.3, seleccionada);
 
         when(confirmarPedidoUseCase.confirmar(eq("token-123"), any(), any())).thenReturn(confirmacion);
 

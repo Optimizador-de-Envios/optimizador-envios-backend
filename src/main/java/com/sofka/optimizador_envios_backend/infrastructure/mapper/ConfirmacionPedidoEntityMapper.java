@@ -4,6 +4,7 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persistence.entity.ConfirmacionPedidoEntity;
@@ -15,7 +16,7 @@ public class ConfirmacionPedidoEntityMapper {
     public ConfirmacionPedidoEntity toEntity(ConfirmacionPedido confirmacion) {
     return ConfirmacionPedidoEntity.of(
         confirmacion.id(),
-        confirmacion.confirmationToken(),
+        confirmacion.confirmationToken().value(),
         confirmacion.pedido().origen().nombre(),
         confirmacion.pedido().origen().lat(),
         confirmacion.pedido().origen().lng(),
@@ -51,7 +52,7 @@ public class ConfirmacionPedidoEntityMapper {
 
         return new ConfirmacionPedido(
             entity.getId(),
-            entity.getConfirmationToken(),
+            ConfirmationToken.of(entity.getConfirmationToken()),
             pedido,
             entity.getDistanceKm(),
             cotizacion

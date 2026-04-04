@@ -5,6 +5,7 @@ import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
+import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,22 +35,10 @@ class ConfirmacionPedidoServiceTest {
 
         PedidoInvalidoException exception = assertThrows(
                 PedidoInvalidoException.class,
-                () -> confirmacionPedidoService.confirmar(CONFIRMATION_TOKEN, pedido, null, cotizacionesDisponibles(), 148.3)
+                () -> confirmacionPedidoService.confirmar(ConfirmationToken.of(CONFIRMATION_TOKEN), pedido, null, cotizacionesDisponibles(), 148.3)
         );
 
         assertEquals("Se debe seleccionar un proveedor para continuar", exception.getMessage());
-    }
-
-    @Test
-    void dadoConfirmationTokenVacio_cuandoSeConfirmaPedido_entoncesDebeLanzarExcepcion() {
-        Pedido pedido = buildPedido();
-
-        PedidoInvalidoException exception = assertThrows(
-                PedidoInvalidoException.class,
-                () -> confirmacionPedidoService.confirmar("   ", pedido, cotizacionesDisponibles().get(0), cotizacionesDisponibles(), 148.3)
-        );
-
-        assertEquals("El confirmationToken es obligatorio", exception.getMessage());
     }
 
     @Test
@@ -59,7 +48,7 @@ class ConfirmacionPedidoServiceTest {
 
         PedidoInvalidoException exception = assertThrows(
                 PedidoInvalidoException.class,
-                () -> confirmacionPedidoService.confirmar(CONFIRMATION_TOKEN, pedido, seleccionInvalida, cotizacionesDisponibles(), 148.3)
+                () -> confirmacionPedidoService.confirmar(ConfirmationToken.of(CONFIRMATION_TOKEN), pedido, seleccionInvalida, cotizacionesDisponibles(), 148.3)
         );
 
         assertEquals("La opcion seleccionada no coincide con las cotizaciones disponibles", exception.getMessage());
@@ -72,15 +61,15 @@ class ConfirmacionPedidoServiceTest {
         Cotizacion seleccionValida = new Cotizacion("Local", 30386.59, "COP", 1);
 
         ConfirmacionPedido confirmacion = confirmacionPedidoService.confirmar(
-            CONFIRMATION_TOKEN,
+                ConfirmationToken.of(CONFIRMATION_TOKEN),
                 pedido,
                 seleccionValida,
-            cotizacionesDisponibles,
+                cotizacionesDisponibles,
                 148.3
         );
 
         assertNull(confirmacion.id());
-        assertEquals(CONFIRMATION_TOKEN, confirmacion.confirmationToken());
+        assertEquals(CONFIRMATION_TOKEN, confirmacion.confirmationToken().value());
         assertSame(pedido, confirmacion.pedido());
         assertEquals(148.3, confirmacion.distanciaKm());
         assertSame(cotizacionesDisponibles.get(2), confirmacion.opcionSeleccionada());
