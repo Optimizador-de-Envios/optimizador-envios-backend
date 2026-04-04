@@ -26,10 +26,22 @@ public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
     }
 
     @Override
-    public ConfirmacionPedido confirmar(Pedido pedido, Cotizacion opcionSeleccionada) {
+    public ConfirmacionPedido confirmar(String confirmationToken, Pedido pedido, Cotizacion opcionSeleccionada) {
+        confirmacionPedidoService.validarTokenConfirmacion(confirmationToken);
+
+        return confirmacionPedidoRepository.buscarPorTokenConfirmacion(confirmationToken)
+                .orElseGet(() -> confirmarNuevoIntento(confirmationToken, pedido, opcionSeleccionada));
+    }
+
+    private ConfirmacionPedido confirmarNuevoIntento(
+            String confirmationToken,
+            Pedido pedido,
+            Cotizacion opcionSeleccionada
+    ) {
         ResultadoCotizacionPedido resultadoCotizacion = cotizarPedidoService.cotizar(pedido);
 
         ConfirmacionPedido confirmacionPendiente = confirmacionPedidoService.confirmar(
+                confirmationToken,
                 pedido,
                 opcionSeleccionada,
                 resultadoCotizacion.cotizaciones(),
