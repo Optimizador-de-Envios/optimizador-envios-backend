@@ -15,6 +15,7 @@ public class ConfirmacionPedidoEntityMapper {
     public ConfirmacionPedidoEntity toEntity(ConfirmacionPedido confirmacion) {
     return ConfirmacionPedidoEntity.of(
         confirmacion.id(),
+        confirmacion.confirmationToken(),
         confirmacion.pedido().origen().nombre(),
         confirmacion.pedido().origen().lat(),
         confirmacion.pedido().origen().lng(),
@@ -48,6 +49,12 @@ public class ConfirmacionPedidoEntityMapper {
                 entity.getSelectedEstimatedDays()
         );
 
-        return new ConfirmacionPedido(entity.getId(), pedido, entity.getDistanceKm(), cotizacion);
+        return new ConfirmacionPedido(
+            entity.getId(),
+            entity.getConfirmationToken(),
+            pedido,
+            entity.getDistanceKm(),
+            cotizacion
+        );
     }
 }

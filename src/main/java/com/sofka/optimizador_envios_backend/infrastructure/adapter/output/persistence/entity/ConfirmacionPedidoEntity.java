@@ -16,6 +16,9 @@ public class ConfirmacionPedidoEntity {
     private String id;
 
     @Column(nullable = false)
+    private String confirmationToken;
+
+    @Column(nullable = false)
     private String originName;
 
     @Column(nullable = false)
@@ -62,6 +65,7 @@ public class ConfirmacionPedidoEntity {
 
         private ConfirmacionPedidoEntity(
             String id,
+            String confirmationToken,
             String originName,
             double originLat,
             double originLng,
@@ -78,6 +82,7 @@ public class ConfirmacionPedidoEntity {
             int selectedEstimatedDays
         ) {
         this.id = id;
+        this.confirmationToken = confirmationToken;
         this.originName = originName;
         this.originLat = originLat;
         this.originLng = originLng;
@@ -96,6 +101,7 @@ public class ConfirmacionPedidoEntity {
 
         public static ConfirmacionPedidoEntity of(
             String id,
+            String confirmationToken,
             String originName,
             double originLat,
             double originLng,
@@ -113,6 +119,7 @@ public class ConfirmacionPedidoEntity {
         ) {
         return new ConfirmacionPedidoEntity(
             id,
+            confirmationToken,
             originName,
             originLat,
             originLng,
@@ -139,6 +146,10 @@ public class ConfirmacionPedidoEntity {
 
     public String getId() {
         return id;
+    }
+
+    public String getConfirmationToken() {
+        return confirmationToken;
     }
 
     public String getOriginName() {
