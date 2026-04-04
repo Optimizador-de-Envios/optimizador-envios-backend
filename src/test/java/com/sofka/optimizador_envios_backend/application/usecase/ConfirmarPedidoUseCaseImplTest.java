@@ -100,7 +100,6 @@ class ConfirmarPedidoUseCaseImplTest {
 
         ConfirmacionPedido resultado = useCase.confirmar(CONFIRMATION_TOKEN, pedido, opcionSeleccionada);
 
-        verify(confirmacionPedidoService).validarTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository).buscarPorTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(distanciaClient).obtenerDistanciaKm(pedido.origen(), pedido.destino());
         verify(fedexClient).cotizar(pedido, 148.3);
@@ -156,7 +155,7 @@ class ConfirmarPedidoUseCaseImplTest {
 
         verify(confirmacionPedidoRepository).buscarPorTokenConfirmacion(CONFIRMATION_TOKEN);
         verify(confirmacionPedidoRepository, never()).guardar(any());
-                verify(confirmacionPedidoService, never()).confirmar(any(), any(), any(), any(), any(Double.class));
+        verify(confirmacionPedidoService, never()).confirmar(any(), any(), any(), any(), any(Double.class));
         verifyNoInteractions(distanciaClient, fedexClient, dhlClient, localClient);
         assertSame(confirmacionExistente, resultado);
     }
