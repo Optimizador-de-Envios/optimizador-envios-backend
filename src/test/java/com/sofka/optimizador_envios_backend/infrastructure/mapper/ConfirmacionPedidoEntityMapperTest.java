@@ -25,6 +25,7 @@ class ConfirmacionPedidoEntityMapperTest {
     void dadaConfirmacionDeDominio_cuandoSeMapeaAEntidad_entoncesDebeCopiarTodosLosCampos() {
         ConfirmacionPedido confirmacion = new ConfirmacionPedido(
                 "abc-123",
+            "token-123",
                 new Pedido(
                         new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
                         new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
@@ -39,6 +40,7 @@ class ConfirmacionPedidoEntityMapperTest {
         ConfirmacionPedidoEntity entity = mapper.toEntity(confirmacion);
 
         assertEquals("abc-123", entity.getId());
+    assertEquals("token-123", entity.getConfirmationToken());
         assertEquals("Tunja, BY, Colombia", entity.getOriginName());
         assertEquals(5.53528, entity.getOriginLat());
         assertEquals(-73.36778, entity.getOriginLng());
@@ -59,6 +61,7 @@ class ConfirmacionPedidoEntityMapperTest {
     void dadaEntidadPersistida_cuandoSeMapeaADominio_entoncesDebeReconstruirLaConfirmacionCompleta() {
         ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
             "abc-123",
+            "token-123",
             "Tunja, BY, Colombia",
             5.53528,
             -73.36778,
@@ -78,6 +81,7 @@ class ConfirmacionPedidoEntityMapperTest {
         ConfirmacionPedido confirmacion = mapper.toDomain(entity);
 
         assertEquals("abc-123", confirmacion.id());
+    assertEquals("token-123", confirmacion.confirmationToken());
         assertEquals("Tunja, BY, Colombia", confirmacion.pedido().origen().nombre());
         assertEquals(5.53528, confirmacion.pedido().origen().lat());
         assertEquals(-73.36778, confirmacion.pedido().origen().lng());
