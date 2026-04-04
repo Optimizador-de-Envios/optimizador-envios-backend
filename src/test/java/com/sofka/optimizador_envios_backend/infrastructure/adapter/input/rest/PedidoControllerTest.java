@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -69,14 +70,14 @@ class PedidoControllerTest {
         return new PedidoRequestDto(order);
     }
 
-        private ConfirmacionPedidoRequestDto buildConfirmRequest(Double weight, String weightUnit, String priority,
-                                                                                                                         String providerName, Double cost, String currency,
-                                                                                                                         Integer estimatedDays) {
+        private ConfirmacionPedidoRequestDto buildConfirmRequest(String confirmationToken, Double weight, String weightUnit, String priority,
+                                                                 String providerName, Double cost, String currency,
+                                                                 Integer estimatedDays) {
                 UbicacionDto origin = new UbicacionDto("Tunja, BY, Colombia", 5.53528, -73.36778);
                 UbicacionDto destination = new UbicacionDto("Bogotá, DC, Colombia", 4.635456, -74.08768);
                 OrderDto order = new OrderDto(origin, destination, weight, weightUnit, priority);
                 SelectedOptionDto selectedOption = new SelectedOptionDto(providerName, cost, currency, estimatedDays);
-                return new ConfirmacionPedidoRequestDto(order, selectedOption);
+                return new ConfirmacionPedidoRequestDto(confirmationToken, order, selectedOption);
         }
 
         private Pedido buildConfirmedPedido() {
@@ -174,17 +175,18 @@ class PedidoControllerTest {
     void dadoPedidoConfirmadoValido_cuandoSeConfirmaProveedor_entoncesRetorna201ConLaConfirmacionGuardada() throws Exception {
         Pedido pedido = buildConfirmedPedido();
         Cotizacion seleccionada = new Cotizacion("Local", 30386.59, "COP", 1);
-        ConfirmacionPedido confirmacion = new ConfirmacionPedido("abc-123", pedido, 148.3, seleccionada);
+        ConfirmacionPedido confirmacion = new ConfirmacionPedido("abc-123", "token-123", pedido, 148.3, seleccionada);
 
-        when(confirmarPedidoUseCase.confirmar(any(), any())).thenReturn(confirmacion);
+        when(confirmarPedidoUseCase.confirmar(eq("token-123"), any(), any())).thenReturn(confirmacion);
 
         mockMvc.perform(post("/api/v1/pedido/confirmar")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                buildConfirmRequest(10.0, "KILOGRAMS", "COST", "Local", 30386.59, "COP", 1)
+                                buildConfirmRequest("token-123", 10.0, "KILOGRAMS", "COST", "Local", 30386.59, "COP", 1)
                         )))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("abc-123"))
+                .andExpect(jsonPath("$.confirmationToken").value("token-123"))
                 .andExpect(jsonPath("$.origin.name").value("Tunja, BY, Colombia"))
                 .andExpect(jsonPath("$.destination.name").value("Bogotá, DC, Colombia"))
                 .andExpect(jsonPath("$.weight").value(10.0))
@@ -200,6 +202,7 @@ class PedidoControllerTest {
     @Test
     void dadoConfirmacionSinProveedorSeleccionado_cuandoSeEnvia_entoncesRetorna400() throws Exception {
         ConfirmacionPedidoRequestDto request = new ConfirmacionPedidoRequestDto(
+                "token-123",
                 new OrderDto(
                         new UbicacionDto("Tunja, BY, Colombia", 5.53528, -73.36778),
                         new UbicacionDto("Bogotá, DC, Colombia", 4.635456, -74.08768),
@@ -217,14 +220,34 @@ class PedidoControllerTest {
     }
 
     @Test
+    void dadoConfirmacionSinConfirmationToken_cuandoSeEnvia_entoncesRetorna400() throws Exception {
+        ConfirmacionPedidoRequestDto request = new ConfirmacionPedidoRequestDto(
+                " ",
+                new OrderDto(
+                        new UbicacionDto("Tunja, BY, Colombia", 5.53528, -73.36778),
+                        new UbicacionDto("Bogotá, DC, Colombia", 4.635456, -74.08768),
+                        10.0,
+                        "KILOGRAMS",
+                        "COST"
+                ),
+                new SelectedOptionDto("Local", 30386.59, "COP", 1)
+        );
+
+        mockMvc.perform(post("/api/v1/pedido/confirmar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void dadoConfirmacionConOpcionInvalida_cuandoSeEnvia_entoncesRetorna400ConMensajeDeNegocio() throws Exception {
-        when(confirmarPedidoUseCase.confirmar(any(), any()))
+        when(confirmarPedidoUseCase.confirmar(any(), any(), any()))
                 .thenThrow(new PedidoInvalidoException("La opcion seleccionada no coincide con las cotizaciones disponibles"));
 
         mockMvc.perform(post("/api/v1/pedido/confirmar")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                buildConfirmRequest(10.0, "KILOGRAMS", "COST", "Local", 99999.0, "COP", 1)
+                                buildConfirmRequest("token-123", 10.0, "KILOGRAMS", "COST", "Local", 99999.0, "COP", 1)
                         )))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("La opcion seleccionada no coincide con las cotizaciones disponibles"));
