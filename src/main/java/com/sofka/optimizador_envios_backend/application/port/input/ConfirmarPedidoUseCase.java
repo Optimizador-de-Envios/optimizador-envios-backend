@@ -5,5 +5,5 @@ import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 
 public interface ConfirmarPedidoUseCase {
-    ConfirmacionPedido confirmar(Pedido pedido, Cotizacion opcionSeleccionada);
+    ConfirmacionPedido confirmar(String confirmationToken, Pedido pedido, Cotizacion opcionSeleccionada);
 }

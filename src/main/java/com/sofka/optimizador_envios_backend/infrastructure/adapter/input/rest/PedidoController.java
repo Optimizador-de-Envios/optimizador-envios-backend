@@ -45,6 +45,7 @@ public class PedidoController {
     public ResponseEntity<ConfirmacionPedidoResponseDto> confirmarPedido(
             @Valid @RequestBody ConfirmacionPedidoRequestDto request) {
         ConfirmacionPedido confirmacionPedido = confirmarPedidoUseCase.confirmar(
+                request.confirmationToken(),
                 pedidoMapper.toDomain(request),
                 pedidoMapper.toDomain(request.selectedOption())
         );
