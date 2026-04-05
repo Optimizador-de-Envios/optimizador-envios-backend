@@ -11,6 +11,8 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persis
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConfirmacionPedidoEntityMapperTest {
@@ -60,8 +62,33 @@ class ConfirmacionPedidoEntityMapperTest {
     }
 
     @Test
-    void dadaEntidadPersistida_cuandoSeMapeaADominio_entoncesDebeReconstruirLaConfirmacionCompleta() {
+    void dadaConfirmacionDeDominioConOwnerYCreacion_cuandoSeMapeaAEntidad_entoncesDebeCopiarUserIdYCreatedAt() {
         ConfirmationToken token = ConfirmationToken.of("token-123");
+        Instant createdAt = Instant.parse("2026-04-03T18:35:00Z");
+        ConfirmacionPedido confirmacion = new ConfirmacionPedido(
+                "abc-123",
+                "user-123",
+                token,
+                new Pedido(
+                        new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
+                        new Ubicacion("Bogotá, DC, Colombia", 4.635456, -74.08768),
+                        10.0,
+                        UnidadPeso.KILOGRAMS,
+                        Prioridad.COST
+                ),
+                148.3,
+                new Cotizacion("Local", 30386.59, "COP", 1),
+                createdAt
+        );
+
+        ConfirmacionPedidoEntity entity = mapper.toEntity(confirmacion);
+
+        assertEquals("user-123", entity.getUserId());
+        assertEquals(createdAt, entity.getCreatedAt());
+    }
+
+    @Test
+    void dadaEntidadPersistida_cuandoSeMapeaADominio_entoncesDebeReconstruirLaConfirmacionCompleta() {
         ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
             "abc-123",
             "token-123",
@@ -99,5 +126,34 @@ class ConfirmacionPedidoEntityMapperTest {
         assertEquals(30386.59, confirmacion.opcionSeleccionada().costo());
         assertEquals("COP", confirmacion.opcionSeleccionada().moneda());
         assertEquals(1, confirmacion.opcionSeleccionada().diasEntrega());
+    }
+
+    @Test
+    void dadaEntidadPersistidaConOwnerYCreacion_cuandoSeMapeaADominio_entoncesDebeReconstruirUserIdYCreatedAt() {
+        ConfirmacionPedidoEntity entity = ConfirmacionPedidoEntity.of(
+                "abc-123",
+                "user-123",
+                "token-123",
+                "Tunja, BY, Colombia",
+                5.53528,
+                -73.36778,
+                "Bogotá, DC, Colombia",
+                4.635456,
+                -74.08768,
+                10.0,
+                "KILOGRAMS",
+                "COST",
+                148.3,
+                "Local",
+                30386.59,
+                "COP",
+                1,
+                Instant.parse("2026-04-03T18:35:00Z")
+        );
+
+        ConfirmacionPedido confirmacion = mapper.toDomain(entity);
+
+        assertEquals("user-123", confirmacion.userId());
+        assertEquals(Instant.parse("2026-04-03T18:35:00Z"), confirmacion.createdAt());
     }
 }

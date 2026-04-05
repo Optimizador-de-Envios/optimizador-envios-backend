@@ -16,6 +16,7 @@ public class ConfirmacionPedidoEntityMapper {
     public ConfirmacionPedidoEntity toEntity(ConfirmacionPedido confirmacion) {
     return ConfirmacionPedidoEntity.of(
         confirmacion.id(),
+        confirmacion.userId(),
         confirmacion.confirmationToken().value(),
         confirmacion.pedido().origen().nombre(),
         confirmacion.pedido().origen().lat(),
@@ -30,7 +31,8 @@ public class ConfirmacionPedidoEntityMapper {
         confirmacion.opcionSeleccionada().nombreProveedor(),
         confirmacion.opcionSeleccionada().costo(),
         confirmacion.opcionSeleccionada().moneda(),
-        confirmacion.opcionSeleccionada().diasEntrega()
+        confirmacion.opcionSeleccionada().diasEntrega(),
+        confirmacion.createdAt()
     );
     }
 
@@ -52,10 +54,12 @@ public class ConfirmacionPedidoEntityMapper {
 
         return new ConfirmacionPedido(
             entity.getId(),
+            entity.getUserId(),
             ConfirmationToken.of(entity.getConfirmationToken()),
             pedido,
             entity.getDistanceKm(),
-            cotizacion
+            cotizacion,
+            entity.getCreatedAt()
         );
     }
 }

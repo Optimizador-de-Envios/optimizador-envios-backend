@@ -1,5 +1,23 @@
 package com.sofka.optimizador_envios_backend.application.usecase;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.sofka.optimizador_envios_backend.application.port.output.ConfirmacionPedidoRepository;
 import com.sofka.optimizador_envios_backend.application.port.output.DistanciaClient;
 import com.sofka.optimizador_envios_backend.application.port.output.ProveedorClient;
@@ -12,24 +30,6 @@ import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoSer
 import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ConfirmarPedidoUseCaseImplTest {
@@ -66,7 +66,8 @@ class ConfirmarPedidoUseCaseImplTest {
 
     private final Cotizacion opcionSeleccionada = new Cotizacion("Local", 30386.59, "COP", 1);
 
-    @BeforeEach
+                @SuppressWarnings("unused")
+                @BeforeEach
     void setUp() {
         CotizarPedidoService cotizarPedidoService = new CotizarPedidoService(
                 distanciaClient,
@@ -105,12 +106,36 @@ class ConfirmarPedidoUseCaseImplTest {
         verify(fedexClient).cotizar(pedido, 148.3);
         verify(dhlClient).cotizar(pedido, 148.3);
         verify(localClient).cotizar(pedido, 148.3);
-                verify(confirmacionPedidoService).confirmar(token, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
+        verify(confirmacionPedidoService).confirmar(token, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
         verify(confirmacionPedidoRepository).guardar(confirmacionPendiente);
         assertSame(confirmacionGuardada, resultado);
         assertEquals("abc-123", resultado.id());
-                assertEquals(CONFIRMATION_TOKEN, resultado.confirmationToken().value());
+        assertEquals(CONFIRMATION_TOKEN, resultado.confirmationToken().value());
     }
+
+        @Test
+        void dadoUsuarioAutenticado_cuandoSeConfirma_entoncesDebeAsociarElUserIdAlaConfirmacionPendiente() {
+                Cotizacion fedex = new Cotizacion("FedEx", 42100.0, "COP", 1);
+                Cotizacion dhl = new Cotizacion("DHL", 35500.0, "COP", 1);
+                Cotizacion local = new Cotizacion("Local", 30386.59, "COP", 1);
+                ConfirmationToken token = ConfirmationToken.of(CONFIRMATION_TOKEN);
+                ConfirmacionPedido confirmacionPendiente = new ConfirmacionPedido(null, "user-123", token, pedido, 148.3, local);
+                ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido("abc-123", "user-123", token, pedido, 148.3, local);
+
+                when(confirmacionPedidoRepository.buscarPorTokenConfirmacion(CONFIRMATION_TOKEN)).thenReturn(Optional.empty());
+                when(distanciaClient.obtenerDistanciaKm(pedido.origen(), pedido.destino())).thenReturn(148.3);
+                when(fedexClient.cotizar(pedido, 148.3)).thenReturn(fedex);
+                when(dhlClient.cotizar(pedido, 148.3)).thenReturn(dhl);
+                when(localClient.cotizar(pedido, 148.3)).thenReturn(local);
+        when(confirmacionPedidoService.confirmar(eq("user-123"), eq(token), eq(pedido), eq(opcionSeleccionada), eq(List.of(fedex, dhl, local)), eq(148.3)))
+                .thenReturn(confirmacionPendiente);
+        when(confirmacionPedidoRepository.guardar(confirmacionPendiente)).thenReturn(confirmacionGuardada);
+
+                ConfirmacionPedido resultado = useCase.confirmar("user-123", CONFIRMATION_TOKEN, pedido, opcionSeleccionada);
+
+        verify(confirmacionPedidoService).confirmar("user-123", token, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
+        assertEquals("user-123", resultado.userId());
+        }
 
     @Test
     void dadoOpcionSeleccionadaInvalida_cuandoSeConfirma_entoncesNoDebePersistirYDebePropagarLaExcepcion() {

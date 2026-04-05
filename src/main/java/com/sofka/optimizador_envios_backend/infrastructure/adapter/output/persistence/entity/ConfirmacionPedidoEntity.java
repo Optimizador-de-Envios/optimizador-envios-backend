@@ -1,12 +1,13 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persistence.entity;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "confirmaciones_pedido")
@@ -17,6 +18,9 @@ public class ConfirmacionPedidoEntity {
 
     @Column(nullable = false)
     private String confirmationToken;
+
+    @Column(nullable = false)
+    private String userId;
 
     @Column(nullable = false)
     private String originName;
@@ -60,11 +64,15 @@ public class ConfirmacionPedidoEntity {
     @Column(nullable = false)
     private int selectedEstimatedDays;
 
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
         protected ConfirmacionPedidoEntity() {
         }
 
         private ConfirmacionPedidoEntity(
             String id,
+            String userId,
             String confirmationToken,
             String originName,
             double originLat,
@@ -79,9 +87,11 @@ public class ConfirmacionPedidoEntity {
             String selectedProviderName,
             double selectedCost,
             String selectedCurrency,
-            int selectedEstimatedDays
+            int selectedEstimatedDays,
+            Instant createdAt
         ) {
         this.id = id;
+        this.userId = userId;
         this.confirmationToken = confirmationToken;
         this.originName = originName;
         this.originLat = originLat;
@@ -97,6 +107,7 @@ public class ConfirmacionPedidoEntity {
         this.selectedCost = selectedCost;
         this.selectedCurrency = selectedCurrency;
         this.selectedEstimatedDays = selectedEstimatedDays;
+        this.createdAt = createdAt;
         }
 
         public static ConfirmacionPedidoEntity of(
@@ -119,6 +130,7 @@ public class ConfirmacionPedidoEntity {
         ) {
         return new ConfirmacionPedidoEntity(
             id,
+            null,
             confirmationToken,
             originName,
             originLat,
@@ -133,14 +145,62 @@ public class ConfirmacionPedidoEntity {
             selectedProviderName,
             selectedCost,
             selectedCurrency,
-            selectedEstimatedDays
+            selectedEstimatedDays,
+            null
         );
         }
 
+        public static ConfirmacionPedidoEntity of(
+            String id,
+            String userId,
+            String confirmationToken,
+            String originName,
+            double originLat,
+            double originLng,
+            String destinationName,
+            double destinationLat,
+            double destinationLng,
+            double weight,
+            String weightUnit,
+            String priority,
+            double distanceKm,
+            String selectedProviderName,
+            double selectedCost,
+            String selectedCurrency,
+            int selectedEstimatedDays,
+            Instant createdAt
+        ) {
+        return new ConfirmacionPedidoEntity(
+            id,
+            userId,
+            confirmationToken,
+            originName,
+            originLat,
+            originLng,
+            destinationName,
+            destinationLat,
+            destinationLng,
+            weight,
+            weightUnit,
+            priority,
+            distanceKm,
+            selectedProviderName,
+            selectedCost,
+            selectedCurrency,
+            selectedEstimatedDays,
+            createdAt
+        );
+        }
+
+    @SuppressWarnings("unused")
     @PrePersist
     void assignIdIfMissing() {
         if (id == null || id.isBlank()) {
             id = UUID.randomUUID().toString();
+        }
+
+        if (createdAt == null) {
+            createdAt = Instant.now();
         }
     }
 
@@ -150,6 +210,10 @@ public class ConfirmacionPedidoEntity {
 
     public String getConfirmationToken() {
         return confirmationToken;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getOriginName() {
@@ -206,5 +270,9 @@ public class ConfirmacionPedidoEntity {
 
     public int getSelectedEstimatedDays() {
         return selectedEstimatedDays;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

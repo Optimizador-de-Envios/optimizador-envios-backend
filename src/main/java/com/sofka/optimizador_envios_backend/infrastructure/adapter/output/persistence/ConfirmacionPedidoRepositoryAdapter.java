@@ -6,6 +6,7 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persis
 import com.sofka.optimizador_envios_backend.infrastructure.mapper.ConfirmacionPedidoEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,6 +27,13 @@ public class ConfirmacionPedidoRepositoryAdapter implements ConfirmacionPedidoRe
     public Optional<ConfirmacionPedido> buscarPorTokenConfirmacion(String confirmationToken) {
         return jpaRepository.findByConfirmationToken(confirmationToken)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<ConfirmacionPedido> buscarPorUserId(String userId) {
+        return jpaRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 
     @Override
