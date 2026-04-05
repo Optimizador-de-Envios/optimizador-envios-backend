@@ -23,8 +23,7 @@ public class JwtTokenService {
 
     public JwtTokenService(
             @Value("${app.security.jwt-secret}") String jwtSecret,
-            @Value("${app.security.jwt-issuer}") String jwtIssuer
-    ) {
+            @Value("${app.security.jwt-issuer}") String jwtIssuer) {
         this.jwtSecret = jwtSecret.getBytes(StandardCharsets.UTF_8);
         this.jwtIssuer = jwtIssuer;
     }

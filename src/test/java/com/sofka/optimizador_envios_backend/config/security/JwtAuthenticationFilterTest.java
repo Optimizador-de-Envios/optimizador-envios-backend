@@ -21,11 +21,23 @@ class JwtAuthenticationFilterTest {
     @Test
     void dadoAuthorizationHeaderAusente_cuandoSeFiltraPedidoProtegido_entoncesDebeResponder401() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/pedido/mis-pedidos");
+        request.addHeader("Origin", "http://localhost:5173");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         filter.doFilter(request, response, new MockFilterChain());
 
         assertEquals(401, response.getStatus());
+        assertEquals("http://localhost:5173", response.getHeader("Access-Control-Allow-Origin"));
+    }
+
+    @Test
+    void dadoPostDeRecomendacionSinToken_cuandoSeFiltra_entoncesDebePasarSinAutenticacion() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/v1/pedido");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, new MockFilterChain());
+
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -55,6 +67,18 @@ class JwtAuthenticationFilterTest {
         filter.doFilter(request, response, new MockFilterChain());
 
         assertEquals(401, response.getStatus());
+    }
+
+    @Test
+    void dadoPreflightOptions_cuandoSeFiltraPedidoProtegido_entoncesDebePasarSinAutenticacion() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("OPTIONS", "/api/v1/pedido/mis-pedidos");
+        request.addHeader("Origin", "http://localhost:5173");
+        request.addHeader("Access-Control-Request-Method", "GET");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, new MockFilterChain());
+
+        assertEquals(200, response.getStatus());
     }
 
     private String buildToken(String secret, String issuer, String subject, String email, long exp) throws Exception {

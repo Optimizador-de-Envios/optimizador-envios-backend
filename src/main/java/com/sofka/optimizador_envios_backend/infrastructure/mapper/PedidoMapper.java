@@ -38,8 +38,7 @@ public class PedidoMapper {
                 dto.providerName(),
                 dto.cost(),
                 dto.currency(),
-                dto.estimatedDays()
-        );
+                dto.estimatedDays());
     }
 
     public RecomendacionResponseDto toResponseDto(Recomendacion recomendacion) {
@@ -61,8 +60,7 @@ public class PedidoMapper {
                 confirmacionPedido.pedido().prioridad().name(),
                 confirmacionPedido.distanciaKm(),
                 toDto(confirmacionPedido.opcionSeleccionada()),
-                confirmacionPedido.createdAt()
-        );
+                confirmacionPedido.createdAt());
     }
 
     public PedidoHistorialResponseDto toHistoryResponseDto(ConfirmacionPedido confirmacionPedido) {
@@ -75,8 +73,7 @@ public class PedidoMapper {
                 confirmacionPedido.pedido().prioridad().name(),
                 confirmacionPedido.distanciaKm(),
                 toDto(confirmacionPedido.opcionSeleccionada()),
-                confirmacionPedido.createdAt()
-        );
+                confirmacionPedido.createdAt());
     }
 
     private Pedido toDomain(OrderDto order) {
@@ -87,8 +84,7 @@ public class PedidoMapper {
                 destino,
                 order.weight(),
                 toUnidadPeso(order.weightUnit()),
-                toPrioridad(order.priority())
-        );
+                toPrioridad(order.priority()));
     }
 
     private CotizacionDto toDto(Cotizacion cotizacion) {
@@ -96,8 +92,7 @@ public class PedidoMapper {
                 cotizacion.nombreProveedor(),
                 cotizacion.costo(),
                 cotizacion.moneda(),
-                cotizacion.diasEntrega()
-        );
+                cotizacion.diasEntrega());
     }
 
     private UbicacionDto toDto(Ubicacion ubicacion) {
