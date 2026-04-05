@@ -11,6 +11,7 @@ import java.util.List;
 public class ConfirmacionPedidoService {
 
     public ConfirmacionPedido confirmar(
+            String userId,
             ConfirmationToken confirmationToken,
             Pedido pedido,
             Cotizacion opcionSeleccionada,
@@ -19,7 +20,17 @@ public class ConfirmacionPedidoService {
     ) {
         Cotizacion opcionValidada = validarOpcionSeleccionada(opcionSeleccionada, cotizacionesDisponibles);
 
-        return ConfirmacionPedido.pendiente(confirmationToken, pedido, distanciaKm, opcionValidada);
+        return ConfirmacionPedido.pendiente(userId, confirmationToken, pedido, distanciaKm, opcionValidada);
+    }
+
+    public ConfirmacionPedido confirmar(
+            ConfirmationToken confirmationToken,
+            Pedido pedido,
+            Cotizacion opcionSeleccionada,
+            List<Cotizacion> cotizacionesDisponibles,
+            double distanciaKm
+    ) {
+        return confirmar(null, confirmationToken, pedido, opcionSeleccionada, cotizacionesDisponibles, distanciaKm);
     }
 
     private Cotizacion validarOpcionSeleccionada(
