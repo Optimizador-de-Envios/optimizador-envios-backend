@@ -28,13 +28,28 @@ public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
 
     @Override
     public ConfirmacionPedido confirmar(String confirmationToken, Pedido pedido, Cotizacion opcionSeleccionada) {
+        return confirmarInterno(null, confirmationToken, pedido, opcionSeleccionada);
+    }
+
+    @Override
+    public ConfirmacionPedido confirmar(String userId, String confirmationToken, Pedido pedido, Cotizacion opcionSeleccionada) {
+        return confirmarInterno(userId, confirmationToken, pedido, opcionSeleccionada);
+    }
+
+    private ConfirmacionPedido confirmarInterno(
+            String userId,
+            String confirmationToken,
+            Pedido pedido,
+            Cotizacion opcionSeleccionada
+    ) {
         ConfirmationToken token = ConfirmationToken.of(confirmationToken);
 
         return confirmacionPedidoRepository.buscarPorTokenConfirmacion(token.value())
-            .orElseGet(() -> confirmarNuevoIntento(token, pedido, opcionSeleccionada));
+                .orElseGet(() -> confirmarNuevoIntento(userId, token, pedido, opcionSeleccionada));
     }
 
     private ConfirmacionPedido confirmarNuevoIntento(
+            String userId,
             ConfirmationToken confirmationToken,
             Pedido pedido,
             Cotizacion opcionSeleccionada
@@ -42,6 +57,7 @@ public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
         ResultadoCotizacionPedido resultadoCotizacion = cotizarPedidoService.cotizar(pedido);
 
         ConfirmacionPedido confirmacionPendiente = confirmacionPedidoService.confirmar(
+                userId,
                 confirmationToken,
                 pedido,
                 opcionSeleccionada,
