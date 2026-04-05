@@ -79,6 +79,44 @@ class ConfirmacionPedidoServiceTest {
         assertEquals(1, confirmacion.opcionSeleccionada().diasEntrega());
     }
 
+    @Test
+    void dadoUsuarioAutenticadoValido_cuandoSeConfirmaPedido_entoncesDebeAsociarElUserIdAlaConfirmacion() {
+        Pedido pedido = buildPedido();
+        List<Cotizacion> cotizacionesDisponibles = cotizacionesDisponibles();
+        Cotizacion seleccionValida = new Cotizacion("Local", 30386.59, "COP", 1);
+
+        ConfirmacionPedido confirmacion = confirmacionPedidoService.confirmar(
+                "user-123",
+                ConfirmationToken.of(CONFIRMATION_TOKEN),
+                pedido,
+                seleccionValida,
+                cotizacionesDisponibles,
+                148.3
+        );
+
+        assertEquals("user-123", confirmacion.userId());
+        assertNull(confirmacion.createdAt());
+    }
+
+    @Test
+    void dadoUserIdVacio_cuandoSeConfirmaPedido_entoncesDebeLanzarExcepcion() {
+        Pedido pedido = buildPedido();
+
+        PedidoInvalidoException exception = assertThrows(
+                PedidoInvalidoException.class,
+                () -> confirmacionPedidoService.confirmar(
+                        "   ",
+                        ConfirmationToken.of(CONFIRMATION_TOKEN),
+                        pedido,
+                        new Cotizacion("Local", 30386.59, "COP", 1),
+                        cotizacionesDisponibles(),
+                        148.3
+                )
+        );
+
+        assertEquals("El userId es obligatorio", exception.getMessage());
+    }
+
     private Pedido buildPedido() {
         return new Pedido(
                 new Ubicacion("Tunja, BY, Colombia", 5.53528, -73.36778),
