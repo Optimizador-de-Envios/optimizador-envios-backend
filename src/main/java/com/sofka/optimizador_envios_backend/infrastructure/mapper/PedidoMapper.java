@@ -1,5 +1,9 @@
 package com.sofka.optimizador_envios_backend.infrastructure.mapper;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
@@ -11,14 +15,11 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dt
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.CotizacionDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
+import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoHistorialResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.RecomendacionResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.SelectedOptionDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.UbicacionDto;
-
-import java.util.List;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class PedidoMapper {
@@ -36,8 +37,7 @@ public class PedidoMapper {
                 dto.providerName(),
                 dto.cost(),
                 dto.currency(),
-                dto.estimatedDays()
-        );
+                dto.estimatedDays());
     }
 
     public RecomendacionResponseDto toResponseDto(Recomendacion recomendacion) {
@@ -51,14 +51,28 @@ public class PedidoMapper {
     public ConfirmacionPedidoResponseDto toResponseDto(ConfirmacionPedido confirmacionPedido) {
         return new ConfirmacionPedidoResponseDto(
                 confirmacionPedido.id(),
+                confirmacionPedido.confirmationToken().value(),
                 toDto(confirmacionPedido.pedido().origen()),
                 toDto(confirmacionPedido.pedido().destino()),
                 confirmacionPedido.pedido().peso(),
                 confirmacionPedido.pedido().unidadPeso().name(),
                 confirmacionPedido.pedido().prioridad().name(),
                 confirmacionPedido.distanciaKm(),
-                toDto(confirmacionPedido.opcionSeleccionada())
-        );
+                toDto(confirmacionPedido.opcionSeleccionada()),
+                confirmacionPedido.createdAt());
+    }
+
+    public PedidoHistorialResponseDto toHistoryResponseDto(ConfirmacionPedido confirmacionPedido) {
+        return new PedidoHistorialResponseDto(
+                confirmacionPedido.id(),
+                toDto(confirmacionPedido.pedido().origen()),
+                toDto(confirmacionPedido.pedido().destino()),
+                confirmacionPedido.pedido().peso(),
+                confirmacionPedido.pedido().unidadPeso().name(),
+                confirmacionPedido.pedido().prioridad().name(),
+                confirmacionPedido.distanciaKm(),
+                toDto(confirmacionPedido.opcionSeleccionada()),
+                confirmacionPedido.createdAt());
     }
 
     private Pedido toDomain(OrderDto order) {
@@ -69,8 +83,7 @@ public class PedidoMapper {
                 destino,
                 order.weight(),
                 toUnidadPeso(order.weightUnit()),
-                toPrioridad(order.priority())
-        );
+                toPrioridad(order.priority()));
     }
 
     private CotizacionDto toDto(Cotizacion cotizacion) {
@@ -78,8 +91,7 @@ public class PedidoMapper {
                 cotizacion.nombreProveedor(),
                 cotizacion.costo(),
                 cotizacion.moneda(),
-                cotizacion.diasEntrega()
-        );
+                cotizacion.diasEntrega());
     }
 
     private UbicacionDto toDto(Ubicacion ubicacion) {

@@ -2,9 +2,8 @@ package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.d
 
 import java.time.Instant;
 
-public record ConfirmacionPedidoResponseDto(
+public record PedidoHistorialResponseDto(
         String id,
-        String confirmationToken,
         UbicacionDto origin,
         UbicacionDto destination,
         double weight,
