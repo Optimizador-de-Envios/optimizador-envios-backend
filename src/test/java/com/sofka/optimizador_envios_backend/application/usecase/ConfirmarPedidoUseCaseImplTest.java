@@ -112,6 +112,30 @@ class ConfirmarPedidoUseCaseImplTest {
                 assertEquals(CONFIRMATION_TOKEN, resultado.confirmationToken().value());
     }
 
+        @Test
+        void dadoUsuarioAutenticado_cuandoSeConfirma_entoncesDebeAsociarElUserIdAlaConfirmacionPendiente() {
+                Cotizacion fedex = new Cotizacion("FedEx", 42100.0, "COP", 1);
+                Cotizacion dhl = new Cotizacion("DHL", 35500.0, "COP", 1);
+                Cotizacion local = new Cotizacion("Local", 30386.59, "COP", 1);
+                ConfirmationToken token = ConfirmationToken.of(CONFIRMATION_TOKEN);
+                ConfirmacionPedido confirmacionPendiente = new ConfirmacionPedido(null, "user-123", token, pedido, 148.3, local);
+                ConfirmacionPedido confirmacionGuardada = new ConfirmacionPedido("abc-123", "user-123", token, pedido, 148.3, local);
+
+                when(confirmacionPedidoRepository.buscarPorTokenConfirmacion(CONFIRMATION_TOKEN)).thenReturn(Optional.empty());
+                when(distanciaClient.obtenerDistanciaKm(pedido.origen(), pedido.destino())).thenReturn(148.3);
+                when(fedexClient.cotizar(pedido, 148.3)).thenReturn(fedex);
+                when(dhlClient.cotizar(pedido, 148.3)).thenReturn(dhl);
+                when(localClient.cotizar(pedido, 148.3)).thenReturn(local);
+                when(confirmacionPedidoService.confirmar(eq("user-123"), eq(token), eq(pedido), eq(opcionSeleccionada), eq(List.of(fedex, dhl, local)), eq(148.3)))
+                                .thenReturn(confirmacionPendiente);
+                when(confirmacionPedidoRepository.guardar(confirmacionPendiente)).thenReturn(confirmacionGuardada);
+
+                ConfirmacionPedido resultado = useCase.confirmar("user-123", CONFIRMATION_TOKEN, pedido, opcionSeleccionada);
+
+                verify(confirmacionPedidoService).confirmar("user-123", token, pedido, opcionSeleccionada, List.of(fedex, dhl, local), 148.3);
+                assertEquals("user-123", resultado.userId());
+        }
+
     @Test
     void dadoOpcionSeleccionadaInvalida_cuandoSeConfirma_entoncesNoDebePersistirYDebePropagarLaExcepcion() {
         Cotizacion fedex = new Cotizacion("FedEx", 42100.0, "COP", 1);
