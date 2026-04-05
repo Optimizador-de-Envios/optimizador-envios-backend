@@ -12,6 +12,7 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dt
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.ConfirmacionPedidoResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.CotizacionDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.OrderDto;
+import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoHistorialResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.PedidoRequestDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.RecomendacionResponseDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.SelectedOptionDto;
@@ -59,7 +60,22 @@ public class PedidoMapper {
                 confirmacionPedido.pedido().unidadPeso().name(),
                 confirmacionPedido.pedido().prioridad().name(),
                 confirmacionPedido.distanciaKm(),
-                toDto(confirmacionPedido.opcionSeleccionada())
+                toDto(confirmacionPedido.opcionSeleccionada()),
+                confirmacionPedido.createdAt()
+        );
+    }
+
+    public PedidoHistorialResponseDto toHistoryResponseDto(ConfirmacionPedido confirmacionPedido) {
+        return new PedidoHistorialResponseDto(
+                confirmacionPedido.id(),
+                toDto(confirmacionPedido.pedido().origen()),
+                toDto(confirmacionPedido.pedido().destino()),
+                confirmacionPedido.pedido().peso(),
+                confirmacionPedido.pedido().unidadPeso().name(),
+                confirmacionPedido.pedido().prioridad().name(),
+                confirmacionPedido.distanciaKm(),
+                toDto(confirmacionPedido.opcionSeleccionada()),
+                confirmacionPedido.createdAt()
         );
     }
 
