@@ -27,42 +27,41 @@ import java.util.List;
 @RequestMapping("/api/v1/pedido")
 public class PedidoController {
 
-    private final ObtenerRecomendacionUseCase obtenerRecomendacionUseCase;
-    private final ConfirmarPedidoUseCase confirmarPedidoUseCase;
+        private final ObtenerRecomendacionUseCase obtenerRecomendacionUseCase;
+        private final ConfirmarPedidoUseCase confirmarPedidoUseCase;
         private final ObtenerMisPedidosUseCase obtenerMisPedidosUseCase;
-    private final PedidoMapper pedidoMapper;
+        private final PedidoMapper pedidoMapper;
 
-    public PedidoController(ObtenerRecomendacionUseCase obtenerRecomendacionUseCase,
-                            ConfirmarPedidoUseCase confirmarPedidoUseCase,
-                                                        ObtenerMisPedidosUseCase obtenerMisPedidosUseCase,
-                            PedidoMapper pedidoMapper) {
-        this.obtenerRecomendacionUseCase = obtenerRecomendacionUseCase;
-        this.confirmarPedidoUseCase = confirmarPedidoUseCase;
+        public PedidoController(ObtenerRecomendacionUseCase obtenerRecomendacionUseCase,
+                        ConfirmarPedidoUseCase confirmarPedidoUseCase,
+                        ObtenerMisPedidosUseCase obtenerMisPedidosUseCase,
+                        PedidoMapper pedidoMapper) {
+                this.obtenerRecomendacionUseCase = obtenerRecomendacionUseCase;
+                this.confirmarPedidoUseCase = confirmarPedidoUseCase;
                 this.obtenerMisPedidosUseCase = obtenerMisPedidosUseCase;
-        this.pedidoMapper = pedidoMapper;
-    }
+                this.pedidoMapper = pedidoMapper;
+        }
 
-    @PostMapping
-    public ResponseEntity<RecomendacionResponseDto> obtenerRecomendacion(
-            @Valid @RequestBody PedidoRequestDto request) {
-        Recomendacion recomendacion = obtenerRecomendacionUseCase
-                .obtenerRecomendacion(pedidoMapper.toDomain(request));
-        return ResponseEntity.ok(pedidoMapper.toResponseDto(recomendacion));
-    }
+        @PostMapping
+        public ResponseEntity<RecomendacionResponseDto> obtenerRecomendacion(
+                        @Valid @RequestBody PedidoRequestDto request) {
+                Recomendacion recomendacion = obtenerRecomendacionUseCase
+                                .obtenerRecomendacion(pedidoMapper.toDomain(request));
+                return ResponseEntity.ok(pedidoMapper.toResponseDto(recomendacion));
+        }
 
-    @PostMapping("/confirmar")
-    public ResponseEntity<ConfirmacionPedidoResponseDto> confirmarPedido(
+        @PostMapping("/confirmar")
+        public ResponseEntity<ConfirmacionPedidoResponseDto> confirmarPedido(
                         @RequestAttribute("authenticatedUserId") String userId,
-            @Valid @RequestBody ConfirmacionPedidoRequestDto request) {
-        ConfirmacionPedido confirmacionPedido = confirmarPedidoUseCase.confirmar(
+                        @Valid @RequestBody ConfirmacionPedidoRequestDto request) {
+                ConfirmacionPedido confirmacionPedido = confirmarPedidoUseCase.confirmar(
                                 userId,
-                request.confirmationToken(),
-                pedidoMapper.toDomain(request),
-                pedidoMapper.toDomain(request.selectedOption())
-        );
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(pedidoMapper.toResponseDto(confirmacionPedido));
-    }
+                                request.confirmationToken(),
+                                pedidoMapper.toDomain(request),
+                                pedidoMapper.toDomain(request.selectedOption()));
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(pedidoMapper.toResponseDto(confirmacionPedido));
+        }
 
         @GetMapping("/mis-pedidos")
         public ResponseEntity<List<PedidoHistorialResponseDto>> obtenerMisPedidos(

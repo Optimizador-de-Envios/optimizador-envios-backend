@@ -1,6 +1,5 @@
 package com.sofka.optimizador_envios_backend.config.security;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -16,12 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JwtAuthenticationFilterTest {
 
-    private JwtAuthenticationFilter filter;
-
-    @BeforeEach
-    void setUp() {
-        filter = new JwtAuthenticationFilter("test-secret", "user-service");
-    }
+    private final JwtTokenService jwtTokenService = new JwtTokenService("test-secret", "user-service");
+    private final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtTokenService);
 
     @Test
     void dadoAuthorizationHeaderAusente_cuandoSeFiltraPedidoProtegido_entoncesDebeResponder401() throws Exception {
@@ -47,6 +42,19 @@ class JwtAuthenticationFilterTest {
         assertEquals(200, response.getStatus());
         assertEquals("user-123", request.getAttribute(JwtAuthenticationFilter.AUTHENTICATED_USER_ID_ATTRIBUTE));
         assertEquals("", response.getContentAsString());
+    }
+
+    @Test
+    void dadoJwtInvalido_cuandoSeFiltraPedidoProtegido_entoncesDebeResponder401() throws Exception {
+        String token = buildToken("wrong-secret", "user-service", "user-123", "juan@example.com", Instant.now().plusSeconds(3600).getEpochSecond());
+
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/pedido/mis-pedidos");
+        request.addHeader("Authorization", "Bearer " + token);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        filter.doFilter(request, response, new MockFilterChain());
+
+        assertEquals(401, response.getStatus());
     }
 
     private String buildToken(String secret, String issuer, String subject, String email, long exp) throws Exception {
