@@ -1,5 +1,7 @@
 package com.sofka.optimizador_envios_backend.application.usecase;
 
+import org.springframework.stereotype.Service;
+
 import com.sofka.optimizador_envios_backend.application.port.input.ConfirmarPedidoUseCase;
 import com.sofka.optimizador_envios_backend.application.port.output.ConfirmacionPedidoRepository;
 import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
@@ -7,7 +9,6 @@ import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.service.ConfirmacionPedidoService;
 import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
@@ -56,14 +57,22 @@ public class ConfirmarPedidoUseCaseImpl implements ConfirmarPedidoUseCase {
     ) {
         ResultadoCotizacionPedido resultadoCotizacion = cotizarPedidoService.cotizar(pedido);
 
-        ConfirmacionPedido confirmacionPendiente = confirmacionPedidoService.confirmar(
+        ConfirmacionPedido confirmacionPendiente = userId == null
+            ? confirmacionPedidoService.confirmar(
+                confirmationToken,
+                pedido,
+                opcionSeleccionada,
+                resultadoCotizacion.cotizaciones(),
+                resultadoCotizacion.distanciaKm()
+            )
+            : confirmacionPedidoService.confirmar(
                 userId,
                 confirmationToken,
                 pedido,
                 opcionSeleccionada,
                 resultadoCotizacion.cotizaciones(),
                 resultadoCotizacion.distanciaKm()
-        );
+            );
 
         return confirmacionPedidoRepository.guardar(confirmacionPendiente);
     }

@@ -1,13 +1,13 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.output.persistence.entity;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
-import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "confirmaciones_pedido")
@@ -192,6 +192,7 @@ public class ConfirmacionPedidoEntity {
         );
         }
 
+    @SuppressWarnings("unused")
     @PrePersist
     void assignIdIfMissing() {
         if (id == null || id.isBlank()) {

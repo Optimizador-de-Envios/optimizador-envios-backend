@@ -1,12 +1,12 @@
 package com.sofka.optimizador_envios_backend.domain.service;
 
+import java.util.List;
+
 import com.sofka.optimizador_envios_backend.domain.exception.PedidoInvalidoException;
 import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
 import com.sofka.optimizador_envios_backend.domain.model.Pedido;
 import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
-
-import java.util.List;
 
 public class ConfirmacionPedidoService {
 
@@ -30,7 +30,9 @@ public class ConfirmacionPedidoService {
             List<Cotizacion> cotizacionesDisponibles,
             double distanciaKm
     ) {
-        return confirmar(null, confirmationToken, pedido, opcionSeleccionada, cotizacionesDisponibles, distanciaKm);
+        Cotizacion opcionValidada = validarOpcionSeleccionada(opcionSeleccionada, cotizacionesDisponibles);
+
+        return ConfirmacionPedido.pendiente(confirmationToken, pedido, distanciaKm, opcionValidada);
     }
 
     private Cotizacion validarOpcionSeleccionada(

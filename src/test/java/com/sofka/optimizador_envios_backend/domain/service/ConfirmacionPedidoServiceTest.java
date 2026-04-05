@@ -1,5 +1,14 @@
 package com.sofka.optimizador_envios_backend.domain.service;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.sofka.optimizador_envios_backend.domain.exception.PedidoInvalidoException;
 import com.sofka.optimizador_envios_backend.domain.model.ConfirmacionPedido;
 import com.sofka.optimizador_envios_backend.domain.model.Cotizacion;
@@ -8,15 +17,6 @@ import com.sofka.optimizador_envios_backend.domain.model.Ubicacion;
 import com.sofka.optimizador_envios_backend.domain.valueobject.ConfirmationToken;
 import com.sofka.optimizador_envios_backend.domain.valueobject.Prioridad;
 import com.sofka.optimizador_envios_backend.domain.valueobject.UnidadPeso;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfirmacionPedidoServiceTest {
 
@@ -24,6 +24,7 @@ class ConfirmacionPedidoServiceTest {
 
     private ConfirmacionPedidoService confirmacionPedidoService;
 
+    @SuppressWarnings("unused")
     @BeforeEach
     void setUp() {
         confirmacionPedidoService = new ConfirmacionPedidoService();

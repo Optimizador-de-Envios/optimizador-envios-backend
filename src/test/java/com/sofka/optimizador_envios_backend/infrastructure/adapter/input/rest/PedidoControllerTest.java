@@ -1,5 +1,24 @@
 package com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest;
 
+import java.time.Instant;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sofka.optimizador_envios_backend.application.port.input.ConfirmarPedidoUseCase;
 import com.sofka.optimizador_envios_backend.application.port.input.ObtenerRecomendacionUseCase;
@@ -19,25 +38,6 @@ import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dt
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.SelectedOptionDto;
 import com.sofka.optimizador_envios_backend.infrastructure.adapter.input.rest.dto.UbicacionDto;
 import com.sofka.optimizador_envios_backend.infrastructure.mapper.PedidoMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.Instant;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class PedidoControllerTest {
@@ -54,7 +54,8 @@ class PedidoControllerTest {
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
+                @SuppressWarnings("unused")
+                @BeforeEach
     void setUp() {
         PedidoController controller = new PedidoController(
                 obtenerRecomendacionUseCase,
