@@ -26,7 +26,7 @@ Valores esperados en `.env`:
 
 ```properties
 JWT_SECRET=your_shared_jwt_secret
-DB_URL=jdbc:postgresql://localhost:5432/optimizador_envios
+DB_URL=jdbc:postgresql://localhost:5432/shipment_service
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 JPA_DDL_AUTO=update

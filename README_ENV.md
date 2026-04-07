@@ -7,7 +7,7 @@ Local secrets management
 
    ```properties
    ORS_API_KEY=your_openrouteservice_api_key
-   DB_URL=jdbc:postgresql://localhost:5432/optimizador_envios
+   DB_URL=jdbc:postgresql://localhost:5432/shipment_service
    DB_USERNAME=postgres
    DB_PASSWORD=postgres
    JPA_DDL_AUTO=update
