@@ -88,7 +88,7 @@ jobs:
         with:
           images: ${{ steps.image_name.outputs.value }}
           tags: |
-            type=raw,value=latest,enable=${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') }}
             type=sha,prefix=sha-,format=short
 
       - name: Configurar Docker Buildx
